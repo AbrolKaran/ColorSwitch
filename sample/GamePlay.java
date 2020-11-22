@@ -167,6 +167,9 @@ public class GamePlay extends Application
         Obstacle sq = new SquareObstacle(1, colors, 112, 110, 90, 1);
         Obstacle dcr = new DoubleCircleObstacle(1, colors, 162, 350, 60, 1);
         Obstacle sqcr = new SquareCircleObstacle(1, colors, 162, 140, 60, 1);
+        Obstacle crfn = new CircleFanObstacle(1,colors,300,300,60,1);
+        Obstacle tn = new TriangleObstacle(1,colors,230,300,140,1);
+        Obstacle qd = new QuadrilateralObstacle(1,colors,300,300,100,1);
 
 
         AnimationTimer timer = new AnimationTimer()
@@ -179,6 +182,9 @@ public class GamePlay extends Application
                 //sq.move();
                 dcr.move();
                 sqcr.move();
+                crfn.move();
+                tn.move();
+                qd.move();
             }
         };
 
@@ -191,6 +197,9 @@ public class GamePlay extends Application
         //cr.display(root);
         //fn.display(root);
         //sq.display(root);
+        tn.display(root);
+        qd.display(root);
+        crfn.display(root);
         dcr.display(root);
         sqcr.display(root);
 
