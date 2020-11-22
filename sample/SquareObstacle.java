@@ -1,6 +1,7 @@
 package sample;
 
 
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
@@ -17,9 +18,9 @@ public class SquareObstacle extends Obstacle{
     @Override
     public void move(){
         Rotate rotate = new Rotate();
-        rotate.setAngle(1);
-        rotate.setPivotX(posX+50);
-        rotate.setPivotY(posY+50);
+        rotate.setAngle(1*direction);
+        rotate.setPivotX(posX+(length+10)/2);
+        rotate.setPivotY(posY+(length+10)/2);
         getR1().getTransforms().add(rotate);
         getR2().getTransforms().add(rotate);
         getR3().getTransforms().add(rotate);
@@ -32,13 +33,14 @@ public class SquareObstacle extends Obstacle{
     }
 
     @Override
-    public void display(){
-
+    public void display(Group r){
+        r.getChildren().addAll(r1,r2,r3,r4);
     }
 
-    public SquareObstacle(int d, ArrayList<Integer> c,float x,float y){
-        super(d,c,x,y);
-        this.length = 90;
+    public SquareObstacle(int d, ArrayList<Integer> c,float x,float y,float l,int dir){
+        super(d,c,x,y,l,dir);
+        this.length = l;
+        this.direction = dir;
         r1 = new Rectangle();
         r1.setX(x+10);
         r1.setY(y);
