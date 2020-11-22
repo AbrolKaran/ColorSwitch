@@ -42,11 +42,25 @@ import java.io.FileInputStream;
 
 public class GamePlay extends Application
 {
+    private int id;
+    private int score = 0;
+    private ArrayList<String> colors;
+    private double length;
+    private double width;
+    private int difficultyLevel;
+
     @Override
     public void start(Stage stage) throws Exception
     {
-        ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(1);
+        //set stage dimensions
+        length = 650;
+        width = 365.625;
+
+        colors = new ArrayList<>();
+        colors.add("#38B6FF");
+        colors.add("#CB6CE6");
+        colors.add("#FFDE59");
+        colors.add("#FF5757");
 
         //Creating graphic pause
         Image img = new Image(new FileInputStream("Pause\\Pause2.png"));
@@ -56,9 +70,8 @@ public class GamePlay extends Application
 
         // create pause button
         Button pause = new Button();
-        pause.setLayoutX(270);
+        pause.setLayoutX(width - 65);
         pause.setLayoutY(10);
-
         pause.setStyle("-fx-background-color: #000000");
         //Setting the size of the button
         pause.setPrefSize(35, 35);
@@ -82,12 +95,11 @@ public class GamePlay extends Application
             }
         });
 
-        // create end button
+        // create quit button
         Button end = new Button("QUIT GAME");
-        end.setLayoutX(230);
-        end.setLayoutY(60);
-
-        end.setStyle("-fx-background-color: #000000 -fx-font-size: 13");
+        end.setLayoutX(width - 100);
+        end.setLayoutY(length - 60);
+        end.setStyle("-fx-background-color: #000000; -fx-font-size: 13");
         end.setTextFill(Color.WHITE);
         //Setting the size of the button
         end.setPrefSize(100, 40);
@@ -110,15 +122,22 @@ public class GamePlay extends Application
             }
         });
 
+        //set score
+        Label scoreLabel = new Label(Integer.toString(score));
+        scoreLabel.setStyle("-fx-font-size: 35");
+        scoreLabel.setTextFill(Color.WHITE);
+        scoreLabel.setLayoutX(20);
+        scoreLabel.setLayoutY(0);
+
         //create stars
-        Image star1 = new Image(new FileInputStream("Constants\\8.png"));
+        Image star1 = (new Star(146, 50)).getStar();
         ImageView starView1 = new ImageView(star1);
         starView1.setFitHeight(27);
         starView1.setPreserveRatio(true);
         starView1.setLayoutX(146);
         starView1.setLayoutY(50);
 
-        Image star2 = new Image(new FileInputStream("Constants\\8.png"));
+        Image star2 = (new Star(146, 50)).getStar();
         ImageView starView2 = new ImageView(star2);
         starView2.setFitHeight(27);
         starView2.setPreserveRatio(true);
@@ -126,7 +145,7 @@ public class GamePlay extends Application
         starView2.setLayoutY(336);
 
         //create color switchers
-        Image cs1 = new Image(new FileInputStream("Constants\\7.png"));
+        Image cs1 = (new ColorSwitcher(colors, 27, 146, 10)).getCs();
         ImageView csView1 = new ImageView(cs1);
         csView1.setFitHeight(27);
         csView1.setPreserveRatio(true);
@@ -141,29 +160,42 @@ public class GamePlay extends Application
         csView2.setLayoutY(225);
 
         Ball ball = new Ball(162, 20, 7, 2);
-        ball.getBall().relocate(162, 500);
+        ball.display().relocate(162, 500);
 
-        Obstacle ob = new CircleObstacle(1, colors, 162, 350);
-        Obstacle fn = new FanObstacle(1, colors, 122, 140);
-        Obstacle sq = new SquareObstacle(1, colors, 350, 450);
+        Obstacle cr = new CircleObstacle(1, colors, 162, 350, 60, 1);
+        Obstacle fn = new FanObstacle(1, colors, 122, 140, 50, 1);
+        Obstacle sq = new SquareObstacle(1, colors, 112, 110, 90, 1);
+        Obstacle dcr = new DoubleCircleObstacle(1, colors, 162, 350, 60, 1);
+        Obstacle sqcr = new SquareCircleObstacle(1, colors, 162, 140, 60, 1);
+
 
         AnimationTimer timer = new AnimationTimer()
         {
             @Override
             public void handle(long l)
             {
-                ob.move();
-                fn.move();
+                //cr.move();
+                //fn.move();
                 //sq.move();
+                dcr.move();
+                sqcr.move();
             }
         };
 
         timer.start();
-        Group root = new Group(((CircleObstacle)ob).getArc4(),((CircleObstacle)ob).getArc1(),((CircleObstacle)ob).getArc2(),((CircleObstacle)ob).getArc3());
+        /*Group root = new Group(((CircleObstacle)ob).getArc4(),((CircleObstacle)ob).getArc1(),((CircleObstacle)ob).getArc2(),((CircleObstacle)ob).getArc3());
 
-        root.getChildren().addAll(((FanObstacle)fn).getR1(), ((FanObstacle)fn).getR2(), ((FanObstacle)fn).getR3(), ((FanObstacle)fn).getR4());
-        root.getChildren().addAll(ball.getBall(), pause, end);
-        root.getChildren().addAll(starView1, starView2, csView1, csView2);
+
+        root.getChildren().addAll(((FanObstacle)fn).getR1(), ((FanObstacle)fn).getR2(), ((FanObstacle)fn).getR3(), ((FanObstacle)fn).getR4());*/
+        Group root = new Group();
+        //cr.display(root);
+        //fn.display(root);
+        //sq.display(root);
+        dcr.display(root);
+        sqcr.display(root);
+
+        root.getChildren().addAll(ball.display(), pause, end);
+        root.getChildren().addAll(scoreLabel, starView1, starView2, csView1, csView2);
         //Creating the scroll pane
         ScrollPane scroll = new ScrollPane();
         scroll.setPrefSize(324, 576);
@@ -171,15 +203,16 @@ public class GamePlay extends Application
         scroll.setContent(root);
 
         // create a scene
-        Scene scene = new Scene(root, 324, 576, Color.BLACK);
+        Scene scene = new Scene(root, width, length, Color.BLACK);
 
         // set the scene
         stage.setScene(scene);
         stage.show();
 
         Bounds bounds = root.getBoundsInLocal();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), new KeyValue(ball.getBall().layoutYProperty(), bounds.getMaxY()-ball.getBall().getRadius())));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), new KeyValue(ball.display().layoutYProperty(), bounds.getMaxY()-ball.display().getRadius())));
         timeline.setCycleCount(500);
         timeline.play();
     }
 }
+
