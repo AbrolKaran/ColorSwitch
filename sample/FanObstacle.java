@@ -54,7 +54,7 @@ public class FanObstacle extends Obstacle{
         return r4;
     }
 
-    public FanObstacle(int d, ArrayList<Integer> c,float x,float y,float l, int dir) {
+    public FanObstacle(int d, ArrayList<String> c,float x,float y,float l, int dir) {
         super(d,c,x,y,l,dir);
         this.length = 50;
         r1 = new Rectangle();
@@ -62,28 +62,28 @@ public class FanObstacle extends Obstacle{
         r1.setY(y-5);
         r1.setWidth(length);
         r1.setHeight(10);
-        r1.setFill(Color.BLUE);
+        r1.setFill(Color.web(colors.get(0)));
 
         r2 = new Rectangle();
         r2.setX(x-5);
         r2.setY(y-length - 5);
         r2.setWidth(10);
         r2.setHeight(length);
-        r2.setFill(Color.GREEN);
+        r2.setFill(Color.web(colors.get(1)));
 
         r3 = new Rectangle();
         r3.setX(posX+5);
         r3.setY(posY-5);
         r3.setWidth(length);
         r3.setHeight(10);
-        r3.setFill(Color.YELLOW);
+        r3.setFill(Color.web(colors.get(2)));
 
         r4 = new Rectangle();
         r4.setX(posX-5);
         r4.setY(posY+5);
         r4.setWidth(10);
         r4.setHeight(length);
-        r4.setFill(Color.RED);
+        r4.setFill(Color.web(colors.get(3)));
 
         rect = new ArrayList<>();
         rect.add(r1);
