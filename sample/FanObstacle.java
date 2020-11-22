@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
@@ -17,7 +18,7 @@ public class FanObstacle extends Obstacle{
     @Override
     public void move(){
         Rotate rotate = new Rotate();
-        rotate.setAngle(1);
+        rotate.setAngle(1*direction);
         rotate.setPivotX(posX);
         rotate.setPivotY(posY);
         getR1().getTransforms().add(rotate);
@@ -32,7 +33,8 @@ public class FanObstacle extends Obstacle{
     }
 
     @Override
-    public void display(){
+    public void display(Group r){
+        r.getChildren().addAll(r1,r2,r3,r4);
 
     }
 
@@ -52,13 +54,13 @@ public class FanObstacle extends Obstacle{
         return r4;
     }
 
-    public FanObstacle(int d, ArrayList<Integer> c,float x,float y) {
-        super(d,c,x,y);
+    public FanObstacle(int d, ArrayList<Integer> c,float x,float y,float l, int dir) {
+        super(d,c,x,y,l,dir);
         this.length = 50;
         r1 = new Rectangle();
         r1.setX(x-length-5);
         r1.setY(y-5);
-        r1.setWidth(50);
+        r1.setWidth(length);
         r1.setHeight(10);
         r1.setFill(Color.BLUE);
 
@@ -66,13 +68,13 @@ public class FanObstacle extends Obstacle{
         r2.setX(x-5);
         r2.setY(y-length - 5);
         r2.setWidth(10);
-        r2.setHeight(50);
+        r2.setHeight(length);
         r2.setFill(Color.GREEN);
 
         r3 = new Rectangle();
         r3.setX(posX+5);
         r3.setY(posY-5);
-        r3.setWidth(50);
+        r3.setWidth(length);
         r3.setHeight(10);
         r3.setFill(Color.YELLOW);
 
@@ -80,8 +82,14 @@ public class FanObstacle extends Obstacle{
         r4.setX(posX-5);
         r4.setY(posY+5);
         r4.setWidth(10);
-        r4.setHeight(50);
+        r4.setHeight(length);
         r4.setFill(Color.RED);
+
+        rect = new ArrayList<>();
+        rect.add(r1);
+        rect.add(r2);
+        rect.add(r3);
+        rect.add(r4);
 
     }
 
