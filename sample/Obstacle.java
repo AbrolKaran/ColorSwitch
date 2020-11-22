@@ -9,12 +9,12 @@ public abstract class Obstacle {
     protected float length;
     protected float posX;
     protected float posY;
-    protected ArrayList<Integer> colors;
+    protected ArrayList<String> colors;
     protected int difficulty;
     protected int direction;
     protected int numColors;
 
-    public Obstacle(int difficulty, ArrayList<Integer> colors,float x, float y,float l,int d) {
+    public Obstacle(int difficulty, ArrayList<String> colors,float x, float y,float l,int d) {
         this.colors = colors;
         posX = x;
         posY = y;
