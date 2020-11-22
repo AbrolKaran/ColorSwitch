@@ -3,6 +3,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.transform.Rotate;
 
 import java.util.ArrayList;
 
@@ -30,7 +31,14 @@ public class CircleObstacle extends Obstacle{
 
     @Override
     public void move(){
-
+        Rotate rotate = new Rotate();
+        rotate.setAngle(1);
+        rotate.setPivotX(posX);
+        rotate.setPivotY(posY);
+        getArc1().getTransforms().add(rotate);
+        getArc2().getTransforms().add(rotate);
+        getArc3().getTransforms().add(rotate);
+        getArc4().getTransforms().add(rotate);
     }
 
     @Override
@@ -38,10 +46,15 @@ public class CircleObstacle extends Obstacle{
 
     }
 
+    @Override
+    public void display(){
+
+    }
+
     public CircleObstacle(int d, ArrayList<Integer> c,float x, float y){
 
         super(d,c,x,y);
-
+        this.length = 45;
         arc1 = new Arc();
         arc1.setCenterX(posX);
         arc1.setCenterY(posY);
