@@ -57,7 +57,7 @@ public class CircleObstacle extends Obstacle{
         r.getChildren().addAll(arc1,arc2,arc3,arc4);
     }
 
-    public CircleObstacle(int d, ArrayList<Integer> c,float x, float y,float l, int dir){
+    public CircleObstacle(int d, ArrayList<String> c,float x, float y,float l, int dir){
 
         super(d,c,x,y,l,dir);
         this.length = l;
@@ -69,7 +69,7 @@ public class CircleObstacle extends Obstacle{
         arc1.setRadiusX(length);
         arc1.setRadiusY(length);
         arc1.setLength(90.0f);
-        arc1.setStroke(Color.GREEN);
+        arc1.setStroke(Color.web(colors.get(0)));
         arc1.setStrokeWidth(10.0f);
         arc1.setFill(Color.TRANSPARENT);
         arc1.setType(ArcType.OPEN);
@@ -81,7 +81,7 @@ public class CircleObstacle extends Obstacle{
         arc2.setRadiusX(length);
         arc2.setRadiusY(length);
         arc2.setLength(90.0f);
-        arc2.setStroke(Color.RED);
+        arc2.setStroke(Color.web(colors.get(3)));
         arc2.setStrokeWidth(10.0f);
         arc2.setFill(Color.TRANSPARENT);
         arc2.setType(ArcType.OPEN);
@@ -93,7 +93,7 @@ public class CircleObstacle extends Obstacle{
         arc3.setRadiusX(length);
         arc3.setRadiusY(length);
         arc3.setLength(90);
-        arc3.setStroke(Color.YELLOW);
+        arc3.setStroke(Color.web(colors.get(1)));
         arc3.setStrokeWidth(10.0f);
         arc3.setFill(Color.TRANSPARENT);
         arc3.setType(ArcType.OPEN);
@@ -105,7 +105,7 @@ public class CircleObstacle extends Obstacle{
         arc4.setRadiusX(length);
         arc4.setRadiusY(length);
         arc4.setLength(90.0f);
-        arc4.setStroke(Color.BLUE);
+        arc4.setStroke(Color.web(colors.get(2)));
         arc4.setStrokeWidth(10.0f);
         arc4.setFill(Color.TRANSPARENT);
         arc4.setType(ArcType.OPEN);
