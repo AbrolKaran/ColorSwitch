@@ -40,29 +40,29 @@ public class SquareObstacle extends Obstacle{
         super(d,c,x,y);
         this.length = 90;
         r1 = new Rectangle();
-        r1.setX(260);
-        r1.setY(100);
+        r1.setX(x+10);
+        r1.setY(y);
         r1.setWidth(length);
         r1.setHeight(10);
         r1.setFill(Color.BLUE);
 
         r2 = new Rectangle();
-        r2.setX(250);
-        r2.setY(100);
+        r2.setX(x);
+        r2.setY(y);
         r2.setWidth(10);
         r2.setHeight(length);
         r2.setFill(Color.GREEN);
 
         r3 = new Rectangle();
-        r3.setX(250);
-        r3.setY(190);
+        r3.setX(x);
+        r3.setY(y+length);
         r3.setWidth(length);
         r3.setHeight(10);
         r3.setFill(Color.YELLOW);
 
         r4 = new Rectangle();
-        r4.setX(340);
-        r4.setY(110);
+        r4.setX(x+length);
+        r4.setY(y+10);
         r4.setWidth(10);
         r4.setHeight(length);
         r4.setFill(Color.RED);
