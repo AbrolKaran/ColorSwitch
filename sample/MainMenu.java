@@ -5,7 +5,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -16,7 +17,9 @@ import java.io.FileInputStream;
 
 public class MainMenu extends Application
 {
-    SavedGamesPage savedGames = new SavedGamesPage();
+    private GamePlay currentGame = new GamePlay();
+    private SavedGamesPage savedGames = new SavedGamesPage();
+    private int HighScore;
 
     @Override
     public void start(Stage stage) throws Exception
@@ -50,6 +53,25 @@ public class MainMenu extends Application
             button.setPrefSize(60, 60);
             //Setting a graphic to the button
             button.setGraphic(view);
+
+            //set action on new game button
+            button.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent actionEvent)
+                {
+                    try
+                    {
+                        stage.close();
+                        currentGame.start(new Stage());
+                    }
+
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            });
 
             //Creating graphic saved game
             Image img4 = new Image(new FileInputStream("MainMenu\\4.png"));
@@ -119,6 +141,18 @@ public class MainMenu extends Application
                 }
             });
 
+            //Creating a dialog
+            Dialog<String> dialog = new Dialog<String>();
+            //Setting the title
+            dialog.setTitle("Music Settings");
+            ButtonType type = new ButtonType("ON", ButtonData.OK_DONE);
+            ButtonType type2 = new ButtonType("OFF", ButtonData.OK_DONE);
+            //Setting the content of the dialog
+            dialog.setHeaderText("Turn Music On/Off");
+            //dialog.setWidth(500);
+            //Adding buttons to the dialog pane
+            dialog.getDialogPane().getButtonTypes().addAll(type2, type);
+
             //Creating graphic music play
             Image img2 = new Image(new FileInputStream("IntroPage\\4.png"));
             ImageView view2 = new ImageView(img2);
@@ -135,6 +169,26 @@ public class MainMenu extends Application
             //Setting a graphic to the button
             button2.setGraphic(view2);
 
+            button2.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent actionEvent)
+                {
+                    dialog.showAndWait();
+                }
+            });
+
+            //Creating a dialog
+            Dialog<String> dialog2 = new Dialog<String>();
+            //Setting the title
+            dialog2.setTitle("High Score");
+            ButtonType type3 = new ButtonType("OK", ButtonData.OK_DONE);
+            //Setting the content of the dialog
+            dialog2.setHeaderText("The High Score is 20");
+            dialog2.setHeight(35);
+            //Adding buttons to the dialog pane
+            dialog2.getDialogPane().getButtonTypes().addAll(type3);
+
             //Creating graphic high score
             Image img3 = new Image(new FileInputStream("IntroPage\\5.png"));
             ImageView view3 = new ImageView(img3);
@@ -150,6 +204,15 @@ public class MainMenu extends Application
             button3.setPrefSize(70, 70);
             //Setting a graphic to the button
             button3.setGraphic(view3);
+
+            button3.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent actionEvent)
+                {
+                    dialog2.showAndWait();
+                }
+            });
 
             // add the heading and buttons
             HBox hbox = new HBox(button, button2, button3, button4, button5);

@@ -30,9 +30,10 @@ public class Main extends Application
 
     public static void main(String[] args)
     {
-        //launch(args);
+        launch(args);
         //Application.launch(PausePage.class, args);
-        Application.launch(GameOverPage.class, args);
+        //Application.launch(GameOverPage.class, args);
+        //Application.launch(GamePlay.class, args);
     }
 
     @Override

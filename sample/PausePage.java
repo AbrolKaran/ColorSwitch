@@ -104,6 +104,20 @@ public class PausePage extends Application
             //Setting a graphic to the button
             button2.setGraphic(view2);
 
+            //dialog box to enter game name
+            TextInputDialog dialog = new TextInputDialog("Game 1");
+            dialog.setTitle("Save and Exit Game");
+            dialog.setHeaderText("Enter the name of your game : ");
+
+            button2.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent actionEvent)
+                {
+                    dialog.showAndWait();
+                }
+            });
+
             //Creating graphic quit
             Image img3 = new Image(new FileInputStream("Pause\\ColorSwitchCopy (2).png"));
             ImageView view3 = new ImageView(img3);

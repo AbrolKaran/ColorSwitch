@@ -1,23 +1,31 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import java.io.FileInputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ListView;
 
 
 public class SavedGamesPage extends Application
 {
+    private ArrayList<GamePlay> listGames;
+    private int numGames;
+    private int HighScore;
+
     @Override
     public void start(Stage stage) throws Exception
     {
@@ -26,21 +34,16 @@ public class SavedGamesPage extends Application
             // set title for the stage
             stage.setTitle("Saved Games");
 
-            //list View for educational qualification
-            ObservableList<String> names = FXCollections.observableArrayList("Game1", "Game2", "Game3", "Game4", "Game5", "Game6", "Game7");
-            ListView<String> listView = new ListView<String>(names);
-            listView.setMaxSize(200, 160);
-            listView.setTranslateX(0);
-            listView.setTranslateY(-50);
-            listView.setStyle("-fx-border-style: solid; -fx-border-color:  #FFDE59; -fx-border-width: 0px; -fx-control-inner-background: #241E1E; -fx-font-size: 15px; -fx-font-family: 'Verdana'");
+            //list View for games
+            ListView<String> listView = this.displayList();
 
-            //Creating graphic music play
-            Image img2 = new Image(new FileInputStream("IntroPage\\4.png"));
+            //Creating graphic home
+            Image img2 = new Image(new FileInputStream("GameOver\\6.png"));
             ImageView view2 = new ImageView(img2);
             view2.setFitHeight(70);
             view2.setPreserveRatio(true);
 
-            // create music play button
+            // create home button
             Button button2 = new Button();
             button2.setTranslateX(-60);
             button2.setTranslateY(330);
@@ -49,6 +52,35 @@ public class SavedGamesPage extends Application
             button2.setPrefSize(70, 70);
             //Setting a graphic to the button
             button2.setGraphic(view2);
+
+            button2.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent actionEvent)
+                {
+                    try
+                    {
+                        stage.close();
+                        (new MainMenu()).start(new Stage());
+                    }
+
+                    catch (Exception e)
+                    {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            });
+
+            //Creating a dialog for high score
+            Dialog<String> dialog2 = new Dialog<String>();
+            //Setting the title
+            dialog2.setTitle("High Score");
+            ButtonType type3 = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+            //Setting the content of the dialog
+            dialog2.setHeaderText("The High Score is 20");
+            dialog2.setHeight(35);
+            //Adding buttons to the dialog pane
+            dialog2.getDialogPane().getButtonTypes().addAll(type3);
 
             //Creating graphic high score
             Image img3 = new Image(new FileInputStream("IntroPage\\5.png"));
@@ -65,6 +97,15 @@ public class SavedGamesPage extends Application
             button3.setPrefSize(70, 70);
             //Setting a graphic to the button
             button3.setGraphic(view3);
+
+            button3.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent actionEvent)
+                {
+                    dialog2.showAndWait();
+                }
+            });
 
             // add the heading and buttons
             VBox hbox = new VBox(button2, button3, listView);
@@ -106,5 +147,17 @@ public class SavedGamesPage extends Application
 
             System.out.println(e.getMessage());
         }
+    }
+
+    public ListView<String> displayList()
+    {
+        ObservableList<String> list = FXCollections.observableArrayList("Game1", "Game2", "Game3", "Game4", "Game5", "Game6", "Game7");
+        ListView<String> listView = new ListView<String>(list);
+        listView.setMaxSize(200, 160);
+        listView.setTranslateX(0);
+        listView.setTranslateY(-50);
+        listView.setStyle("-fx-border-width: 0px; -fx-control-inner-background: #241E1E; -fx-font-size: 15px; -fx-font-family: 'Verdana'");
+
+        return listView;
     }
 }

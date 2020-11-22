@@ -45,16 +45,14 @@ public class GamePlay extends Application
     private int id;
     private int score = 0;
     private ArrayList<String> colors;
-    private double length;
-    private double width;
+    private float length = 650;
+    private float width = 365;
     private int difficultyLevel;
 
     @Override
     public void start(Stage stage) throws Exception
     {
-        //set stage dimensions
-        length = 650;
-        width = 365.625;
+        float posX = width/2;
 
         colors = new ArrayList<>();
         colors.add("#38B6FF");
@@ -129,47 +127,53 @@ public class GamePlay extends Application
         scoreLabel.setLayoutX(20);
         scoreLabel.setLayoutY(0);
 
-        //create stars
+        /*//create stars
         Image star1 = (new Star(146, 50)).getStar();
         ImageView starView1 = new ImageView(star1);
         starView1.setFitHeight(27);
         starView1.setPreserveRatio(true);
-        starView1.setLayoutX(146);
-        starView1.setLayoutY(50);
+        starView1.setLayoutX(posX-16);
+        starView1.setLayoutY(150);
+        //starView1.setLayoutY(80);
 
         Image star2 = (new Star(146, 50)).getStar();
         ImageView starView2 = new ImageView(star2);
         starView2.setFitHeight(27);
         starView2.setPreserveRatio(true);
-        starView2.setLayoutX(146);
-        starView2.setLayoutY(336);
+        starView2.setLayoutX(posX-16);
+        starView2.setLayoutY(403);
+        //starView2.setLayoutY(349);*/
 
         //create color switchers
         Image cs1 = (new ColorSwitcher(colors, 27, 146, 10)).getCs();
         ImageView csView1 = new ImageView(cs1);
         csView1.setFitHeight(27);
         csView1.setPreserveRatio(true);
-        csView1.setLayoutX(146);
+        csView1.setLayoutX(posX-16);
         csView1.setLayoutY(10);
 
         Image cs2 = new Image(new FileInputStream("Constants\\7.png"));
         ImageView csView2 = new ImageView(cs2);
         csView2.setFitHeight(27);
         csView2.setPreserveRatio(true);
-        csView2.setLayoutX(146);
-        csView2.setLayoutY(225);
+        csView2.setLayoutX(posX-16);
+        csView2.setLayoutY(270);
 
         Ball ball = new Ball(162, 20, 7, 2);
-        ball.display().relocate(162, 500);
+        ball.display().relocate(posX, 530);
 
-        Obstacle cr = new CircleObstacle(1, colors, 162, 350, 60, 1);
-        Obstacle fn = new FanObstacle(1, colors, 122, 140, 50, 1);
-        Obstacle sq = new SquareObstacle(1, colors, 112, 110, 90, 1);
-        Obstacle dcr = new DoubleCircleObstacle(1, colors, 162, 350, 60, 1);
-        Obstacle sqcr = new SquareCircleObstacle(1, colors, 162, 140, 60, 1);
-        Obstacle crfn = new CircleFanObstacle(1,colors,300,300,60,1);
-        Obstacle tn = new TriangleObstacle(1,colors,230,300,140,1);
-        Obstacle qd = new QuadrilateralObstacle(1,colors,300,300,100,1);
+
+        float posY = 160;
+        float posY2 = 420;
+
+        Obstacle cr = new CircleObstacle(1, colors, posX, posY2, 60, 1);
+        Obstacle fn = new FanObstacle(1, colors, posX+30, posY, 50, 1);
+        Obstacle sq = new SquareObstacle(1, colors, posX-50, posY-50, 90, 1);
+        Obstacle dcr = new DoubleCircleObstacle(1, colors, posX, posY2, 60, 1);
+        Obstacle sqcr = new SquareCircleObstacle(1, colors, posX, posY, 60, 1);
+        Obstacle crfn = new CircleFanObstacle(1,colors,posX,posY2,60,1);
+        Obstacle tn = new TriangleObstacle(1,colors,posX-70,posY2+30,140,1);
+        Obstacle qd = new QuadrilateralObstacle(1,colors,posX,posY,100,1);
 
 
         AnimationTimer timer = new AnimationTimer()
@@ -177,9 +181,9 @@ public class GamePlay extends Application
             @Override
             public void handle(long l)
             {
-                //cr.move();
-                //fn.move();
-                //sq.move();
+                cr.move();
+                fn.move();
+                sq.move();
                 dcr.move();
                 sqcr.move();
                 crfn.move();
@@ -190,21 +194,24 @@ public class GamePlay extends Application
 
         timer.start();
         /*Group root = new Group(((CircleObstacle)ob).getArc4(),((CircleObstacle)ob).getArc1(),((CircleObstacle)ob).getArc2(),((CircleObstacle)ob).getArc3());
-
-
         root.getChildren().addAll(((FanObstacle)fn).getR1(), ((FanObstacle)fn).getR2(), ((FanObstacle)fn).getR3(), ((FanObstacle)fn).getR4());*/
         Group root = new Group();
-        //cr.display(root);
-        //fn.display(root);
-        //sq.display(root);
-        tn.display(root);
-        qd.display(root);
-        crfn.display(root);
-        dcr.display(root);
-        sqcr.display(root);
+        int ob1 = 0;
+        int ob2 = 0;
+
+        cr.display(root); ob2 = 0;
+        fn.display(root); ob1 = 1;
+        //sq.display(root); ob1 = 0;
+        //dcr.display(root); ob2 = 0;
+        //sqcr.display(root); ob1 = 0;
+        //crfn.display(root); ob2 = 1;
+        //tn.display(root); ob2 = 0;
+        //qd.display(root); ob1 = 0;
+
+        this.placeStar(ob1, ob2, root);
 
         root.getChildren().addAll(ball.display(), pause, end);
-        root.getChildren().addAll(scoreLabel, starView1, starView2, csView1, csView2);
+        root.getChildren().addAll(scoreLabel, csView1, csView2);
         //Creating the scroll pane
         ScrollPane scroll = new ScrollPane();
         scroll.setPrefSize(324, 576);
@@ -223,5 +230,44 @@ public class GamePlay extends Application
         timeline.setCycleCount(500);
         timeline.play();
     }
-}
 
+    public void placeStar(int ob1, int ob2, Group root)
+    {
+        float posX = width/2;
+        //create stars
+        Image star1 = (new Star(146, 50)).getStar();
+        ImageView starView1 = new ImageView(star1);
+        starView1.setFitHeight(27);
+        starView1.setPreserveRatio(true);
+        starView1.setLayoutX(posX-16);
+
+        if(ob1 == 0)
+        {
+            starView1.setLayoutY(150);
+        }
+
+        else if(ob1 == 1)
+        {
+            starView1.setLayoutY(80);
+        }
+
+        Image star2 = (new Star(146, 50)).getStar();
+        ImageView starView2 = new ImageView(star2);
+        starView2.setFitHeight(27);
+        starView2.setPreserveRatio(true);
+        starView2.setLayoutX(posX-16);
+
+        if(ob2 == 0)
+        {
+            starView2.setLayoutY(403);
+        }
+
+        else if(ob2 == 1)
+        {
+            starView2.setLayoutY(349);
+        }
+
+        root.getChildren().addAll(starView1, starView2);
+
+    }
+}

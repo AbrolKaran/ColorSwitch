@@ -69,6 +69,18 @@ public class GameOverPage extends Application
                 }
             });
 
+            //Creating a dialog for resurrect
+            Dialog<String> dialog = new Dialog<String>();
+            //Setting the title
+            dialog.setTitle("Resurrect");
+            ButtonType type = new ButtonType("YES", ButtonBar.ButtonData.OK_DONE);
+            ButtonType type2 = new ButtonType("NO", ButtonBar.ButtonData.OK_DONE);
+            //Setting the content of the dialog
+            dialog.setHeaderText("Are you sure you want to use 10 stars to resurrect?");
+            //dialog.setWidth(500);
+            //Adding buttons to the dialog pane
+            dialog.getDialogPane().getButtonTypes().addAll(type2, type);
+
             //Creating graphic resurrect
             Image img3 = new Image(new FileInputStream("GameOver\\7.png"));
             ImageView view3 = new ImageView(img3);
@@ -84,6 +96,15 @@ public class GameOverPage extends Application
             button3.setPrefSize(70, 70);
             //Setting a graphic to the button
             button3.setGraphic(view3);
+
+            button3.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent actionEvent)
+                {
+                    dialog.showAndWait();
+                }
+            });
 
             // add the heading and buttons
             VBox hbox = new VBox(button2, button3, score, highScore);
