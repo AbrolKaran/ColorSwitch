@@ -1,6 +1,10 @@
 package sample;
 
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.animation.RotateTransition;
 import javafx.util.Duration;
@@ -22,6 +26,8 @@ import javafx.scene.layout.*;
 import javafx.scene.image.*;
 import javafx.geometry.*;
 import javafx.scene.Group;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
 import javafx.scene.paint.*;
 
 public class Main extends Application
@@ -44,6 +50,16 @@ public class Main extends Application
             // set title for the stage
             stage.setTitle("Color Switch");
 
+            ArrayList<String> colors = new ArrayList<>();
+            colors.add("#38B6FF");
+            colors.add("#CB6CE6");
+            colors.add("#FFDE59");
+            colors.add("#FF5757");
+
+            HBox hbox = new HBox();
+
+            Group root = new Group();
+
             //Create outer ring
             Image outerRing = new Image(new FileInputStream("Rings1\\2.png"));
             ImageView ringview = new ImageView(outerRing);
@@ -60,19 +76,54 @@ public class Main extends Application
             ringview2.setTranslateX(-100);
             ringview2.setTranslateY(55);
 
+            Obstacle cr = new CircleObstacle(1, colors, 50, 230, 80, -1);
+            Obstacle cr2 = new CircleObstacle(1, colors, 50, 230, 55, 1);
+            Obstacle cr3 = new CircleObstacle(1, colors, 50, 230, 110, 1);
+
+            CircleObstacle crt = (CircleObstacle) cr;
+            CircleObstacle crt2 = (CircleObstacle) cr3;
+            crt.getArc1().setStrokeWidth(18.0f);
+            crt.getArc2().setStrokeWidth(18.0f);
+            crt.getArc3().setStrokeWidth(18.0f);
+            crt.getArc4().setStrokeWidth(18.0f);
+
+            crt2.getArc1().setStrokeWidth(22.0f);
+            crt2.getArc2().setStrokeWidth(22.0f);
+            crt2.getArc3().setStrokeWidth(22.0f);
+            crt2.getArc4().setStrokeWidth(22.0f);
+
+            //root.setLayoutX(100);
+            //root.setLayoutY(100);
+
+            AnimationTimer timer = new AnimationTimer()
+            {
+                @Override
+                public void handle(long l)
+                {
+                    cr.move();
+                    cr2.move();
+                    cr3.move();
+                }
+            };
+
+            timer.start();
+            cr.display(root);
+            cr2.display(root);
+            cr3.display(root);
+
             //Creating graphic play
             Image img = new Image(new FileInputStream("Rings1\\4.png"));
             ImageView view = new ImageView(img);
-            view.setFitHeight(43);
+            view.setFitHeight(47);
             view.setPreserveRatio(true);
 
             // create play button
             Button button = new Button();
-            button.setTranslateX(-200);
-            button.setTranslateY(55);
+            button.setLayoutX(20);
+            button.setLayoutY(205);
             button.setStyle("-fx-background-color: #241E1E");
             //Setting the size of the button
-            button.setPrefSize(43, 43);
+            button.setPrefSize(47, 47);
             //Setting a graphic to the button
             button.setGraphic(view);
 
@@ -93,38 +144,6 @@ public class Main extends Application
                     }
                 }
             });
-
-            //Creating graphic music play
-            Image img2 = new Image(new FileInputStream("IntroPage\\4.png"));
-            ImageView view2 = new ImageView(img2);
-            view2.setFitHeight(70);
-            view2.setPreserveRatio(true);
-
-            // create music play button
-            Button button2 = new Button();
-            button2.setTranslateX(150);
-            button2.setTranslateY(200);
-            button2.setStyle("-fx-background-color: #241E1E");
-            //Setting the size of the button
-            button2.setPrefSize(70, 70);
-            //Setting a graphic to the button
-            button2.setGraphic(view2);
-
-            //Creating graphic high score
-            Image img3 = new Image(new FileInputStream("IntroPage\\5.png"));
-            ImageView view3 = new ImageView(img3);
-            view3.setFitHeight(70);
-            view3.setPreserveRatio(true);
-
-            // create high score button
-            Button button3 = new Button();
-            button3.setTranslateX(220);
-            button3.setTranslateY(200);
-            button3.setStyle("-fx-background-color: #241E1E");
-            //Setting the size of the button
-            button3.setPrefSize(70, 70);
-            //Setting a graphic to the button
-            button3.setGraphic(view3);
 
             //Instantiating RotateTransition class
             RotateTransition rotate = new RotateTransition();
@@ -161,7 +180,7 @@ public class Main extends Application
             rotate2.play();
 
             // add the heading and buttons
-            HBox hbox = new HBox(ringview, ringview2, button);
+
 
             // set spacing
             hbox.setSpacing(10);
@@ -171,6 +190,8 @@ public class Main extends Application
 
             // create a scene
             Scene scene = new Scene(hbox, 324, 576);
+            root.getChildren().add(button);
+            hbox.getChildren().addAll(root);
 
             // create a input stream
             FileInputStream input = new FileInputStream("IntroPage\\2.png");
