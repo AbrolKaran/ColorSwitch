@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.*;
 import javafx.application.Application;
 import javafx.animation.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import javafx.scene.transform.Rotate;
@@ -48,6 +50,7 @@ public class GamePlay extends Application
     private float length = 650;
     private float width = 365;
     private int difficultyLevel;
+    int flag = 0;
 
     @Override
     public void start(Stage stage) throws Exception
@@ -159,8 +162,7 @@ public class GamePlay extends Application
         csView2.setLayoutX(posX-16);
         csView2.setLayoutY(270);
 
-        Ball ball = new Ball(162, 20, 7, 2);
-        ball.display().relocate(posX, 530);
+        Ball ball = new Ball(posX,530, -6.5f, 7, 2);
 
 
         float posY = 160;
@@ -174,6 +176,13 @@ public class GamePlay extends Application
         Obstacle crfn = new CircleFanObstacle(1,colors,posX,posY2,60,1);
         Obstacle tn = new TriangleObstacle(1,colors,posX-70,posY2+30,140,1);
         Obstacle qd = new QuadrilateralObstacle(1,colors,posX,posY,100,1);
+
+        EventHandler<KeyEvent> eventEventHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                flag = 1;
+            }
+        };
 
 
         AnimationTimer timer = new AnimationTimer()
@@ -189,6 +198,8 @@ public class GamePlay extends Application
                 crfn.move();
                 tn.move();
                 qd.move();
+                ball.move(flag);
+                flag = 0;
             }
         };
 
@@ -220,15 +231,15 @@ public class GamePlay extends Application
 
         // create a scene
         Scene scene = new Scene(root, width, length, Color.BLACK);
-
+        scene.setOnKeyPressed(e -> {
+            if(e.getCode().equals(KeyCode.SHIFT));
+            {
+                flag=1;
+            }
+        });
         // set the scene
         stage.setScene(scene);
         stage.show();
-
-        Bounds bounds = root.getBoundsInLocal();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), new KeyValue(ball.display().layoutYProperty(), bounds.getMaxY()-ball.display().getRadius())));
-        timeline.setCycleCount(500);
-        timeline.play();
     }
 
     public void placeStar(int ob1, int ob2, Group root)
