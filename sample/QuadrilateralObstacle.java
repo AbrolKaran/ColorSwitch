@@ -36,7 +36,7 @@ public class QuadrilateralObstacle extends Obstacle {
         return lines;
     }
 
-    public void move(){
+    public void move(float vel,int ch){
         Rotate rotate = new Rotate();
         rotate.setAngle(1*direction);
         rotate.setPivotX(posX);
@@ -45,6 +45,13 @@ public class QuadrilateralObstacle extends Obstacle {
         getLine2().getTransforms().add(rotate);
         getLine3().getTransforms().add(rotate);
         getLine4().getTransforms().add(rotate);
+
+        if(ch==1){
+            getLine1().setLayoutY(getLine1().getLayoutY()-vel);
+            getLine2().setLayoutY(getLine2().getLayoutY()-vel);
+            getLine3().setLayoutY(getLine3().getLayoutY()-vel);
+            getLine4().setLayoutY(getLine4().getLayoutY()-vel);
+        }
     }
 
     @Override

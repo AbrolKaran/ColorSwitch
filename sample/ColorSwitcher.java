@@ -41,4 +41,10 @@ public class ColorSwitcher
     {
         return cs;
     }
+
+    public void move(float vel,int ch){
+        if(ch==1){
+            //Imageview.setLayoutY(Imageview.getLayoutY()-vel);
+        }
+    }
 }

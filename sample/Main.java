@@ -100,9 +100,9 @@ public class Main extends Application
                 @Override
                 public void handle(long l)
                 {
-                    cr.move();
-                    cr2.move();
-                    cr3.move();
+                    cr.move(0,0);
+                    cr2.move(0,0);
+                    cr3.move(0,0);
                 }
             };
 

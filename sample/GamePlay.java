@@ -4,7 +4,10 @@ import java.io.*;
 import java.util.*;
 import javafx.application.Application;
 import javafx.animation.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.Circle;
+import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 import javafx.scene.transform.Rotate;
 import javafx.fxml.FXMLLoader;
@@ -48,6 +51,7 @@ public class GamePlay extends Application
     private float length = 650;
     private float width = 365;
     private int difficultyLevel;
+    int flag = 0;
 
     @Override
     public void start(Stage stage) throws Exception
@@ -115,7 +119,7 @@ public class GamePlay extends Application
 
                 catch (Exception e)
                 {
-                    System.out.println(e.getMessage());
+                     System.out.println(e.getMessage());
                 }
             }
         });
@@ -127,14 +131,14 @@ public class GamePlay extends Application
         scoreLabel.setLayoutX(20);
         scoreLabel.setLayoutY(0);
 
-        /*//create stars
+        //create stars
         Image star1 = (new Star(146, 50)).getStar();
         ImageView starView1 = new ImageView(star1);
         starView1.setFitHeight(27);
         starView1.setPreserveRatio(true);
         starView1.setLayoutX(posX-16);
         starView1.setLayoutY(150);
-        //starView1.setLayoutY(80);
+        starView1.setLayoutY(80);
 
         Image star2 = (new Star(146, 50)).getStar();
         ImageView starView2 = new ImageView(star2);
@@ -142,7 +146,7 @@ public class GamePlay extends Application
         starView2.setPreserveRatio(true);
         starView2.setLayoutX(posX-16);
         starView2.setLayoutY(403);
-        //starView2.setLayoutY(349);*/
+        starView2.setLayoutY(349);
 
         //create color switchers
         Image cs1 = (new ColorSwitcher(colors, 27, 146, 10)).getCs();
@@ -159,8 +163,8 @@ public class GamePlay extends Application
         csView2.setLayoutX(posX-16);
         csView2.setLayoutY(270);
 
-        Ball ball = new Ball(162, 20, 7, 2);
-        ball.display().relocate(posX, 530);
+
+        Ball ball = new Ball(posX,530, -6.5f, 7, 2);
 
 
         float posY = 160;
@@ -175,32 +179,23 @@ public class GamePlay extends Application
         Obstacle tn = new TriangleObstacle(1,colors,posX-70,posY2+30,140,1);
         Obstacle qd = new QuadrilateralObstacle(1,colors,posX,posY,100,1);
 
-
-        AnimationTimer timer = new AnimationTimer()
-        {
+        EventHandler<KeyEvent> eventEventHandler = new EventHandler<KeyEvent>() {
             @Override
-            public void handle(long l)
-            {
-                cr.move();
-                fn.move();
-                sq.move();
-                dcr.move();
-                sqcr.move();
-                crfn.move();
-                tn.move();
-                qd.move();
+            public void handle(KeyEvent keyEvent) {
+                flag = 1;
             }
         };
 
-        timer.start();
+
+
         /*Group root = new Group(((CircleObstacle)ob).getArc4(),((CircleObstacle)ob).getArc1(),((CircleObstacle)ob).getArc2(),((CircleObstacle)ob).getArc3());
         root.getChildren().addAll(((FanObstacle)fn).getR1(), ((FanObstacle)fn).getR2(), ((FanObstacle)fn).getR3(), ((FanObstacle)fn).getR4());*/
         Group root = new Group();
         int ob1 = 0;
         int ob2 = 0;
 
-        cr.display(root); ob2 = 0;
-        fn.display(root); ob1 = 1;
+        //cr.display(root); ob2 = 0;
+        //fn.display(root); ob1 = 1;
         //sq.display(root); ob1 = 0;
         //dcr.display(root); ob2 = 0;
         //sqcr.display(root); ob1 = 0;
@@ -208,10 +203,10 @@ public class GamePlay extends Application
         //tn.display(root); ob2 = 0;
         //qd.display(root); ob1 = 0;
 
-        this.placeStar(ob1, ob2, root);
+        //this.placeStar(ob1, ob2, root);
 
         root.getChildren().addAll(ball.display(), pause, end);
-        root.getChildren().addAll(scoreLabel, csView1, csView2);
+        root.getChildren().addAll(scoreLabel, csView1, csView2,starView1,starView2);
         //Creating the scroll pane
         ScrollPane scroll = new ScrollPane();
         scroll.setPrefSize(324, 576);
@@ -220,18 +215,58 @@ public class GamePlay extends Application
 
         // create a scene
         Scene scene = new Scene(root, width, length, Color.BLACK);
+        scene.setOnKeyPressed(e -> {
+            if(e.getCode().equals(KeyCode.SHIFT));
+            {
+                flag=1;
+            }
+        });
+        AnimationTimer timer = new AnimationTimer()
+        {
+            @Override
+            public void handle(long l)
+            {
+                float vel = ball.getVelocity();
+                int ch;
+                if(ball.getY()<=length/2 && vel<0) {
+                    ch=1;
+                    ball.updateVel(flag);
+                }
+                else{
+                    ch=0;
+                    ball.move(flag);
+                }
+                flag = 0;
+                cr.move(vel,ch);
+                moveIm(csView1,vel,ch);
+                moveIm(csView2,vel,ch);
+                moveIm(starView1,vel,ch);
+                moveIm(starView2,vel,ch);
+                fn.move(vel,ch);
+                sq.move(vel,ch);
+                dcr.move(vel,ch);
+                sqcr.move(vel,ch);
+                crfn.move(vel,ch);
+                tn.move(vel,ch);
+                qd.move(vel,ch);
 
+
+            }
+        };
+
+        timer.start();
         // set the scene
         stage.setScene(scene);
         stage.show();
-
-        Bounds bounds = root.getBoundsInLocal();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), new KeyValue(ball.display().layoutYProperty(), bounds.getMaxY()-ball.display().getRadius())));
-        timeline.setCycleCount(500);
-        timeline.play();
     }
 
-    public void placeStar(int ob1, int ob2, Group root)
+    public static void moveBack(Group r,float vel){
+        Translate translate = new Translate();
+        translate.setY(-vel);
+        r.getTransforms().add(translate);
+    }
+
+    /*public void placeStar(int ob1, int ob2, Group root)
     {
         float posX = width/2;
         //create stars
@@ -269,5 +304,14 @@ public class GamePlay extends Application
 
         root.getChildren().addAll(starView1, starView2);
 
+    }*/
+
+    //temp code for moving images
+    public static void moveIm(ImageView im,float vel,int ch){
+    if(ch==1){
+        im.setLayoutY(im.getLayoutY() - vel);
     }
 }
+
+}
+

@@ -18,7 +18,7 @@ public class SquareObstacle extends Obstacle{
 
 
     @Override
-    public void move(){
+    public void move(float vel, int ch){
         Rotate rotate = new Rotate();
         rotate.setAngle(1*direction);
         rotate.setPivotX(posX+(length+10)/2);
@@ -27,6 +27,13 @@ public class SquareObstacle extends Obstacle{
         getR2().getTransforms().add(rotate);
         getR3().getTransforms().add(rotate);
         getR4().getTransforms().add(rotate);
+
+        if(ch==1){
+            getR4().setLayoutY(getR4().getLayoutY()-vel);
+            getR1().setLayoutY(getR1().getLayoutY()-vel);
+            getR2().setLayoutY(getR2().getLayoutY()-vel);
+            getR3().setLayoutY(getR3().getLayoutY()-vel);
+        }
     }
 
     @Override

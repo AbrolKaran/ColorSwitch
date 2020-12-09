@@ -9,10 +9,10 @@ public class CircleFanObstacle extends Obstacle{
     private FanObstacle f1;
 
     @Override
-    public void move(){
+    public void move(float vel,int ch){
 
-        f1.move();
-        c1.move();
+        f1.move(vel,ch);
+        c1.move(vel,ch);
     }
 
     @Override

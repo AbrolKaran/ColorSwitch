@@ -9,10 +9,10 @@ public class SquareCircleObstacle extends Obstacle{
     private CircleObstacle c1;
 
     @Override
-    public void move(){
+    public void move(float vel,int ch){
 
-        s1.move();
-        c1.move();
+        s1.move(vel,ch);
+        c1.move(vel,ch);
     }
 
     @Override

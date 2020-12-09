@@ -34,4 +34,11 @@ public class Star
     {
         return star;
     }
+
+    public void move(float vel,int ch){
+        if(ch==1){
+            //Imageview.setLayoutY(Imageview.getLayoutY()-vel);
+        }
+    }
+
 }

@@ -5,6 +5,7 @@ import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 
 import java.util.ArrayList;
 
@@ -36,7 +37,7 @@ public class CircleObstacle extends Obstacle{
     }
 
     @Override
-    public void move(){
+    public void move(float vel, int ch){
         Rotate rotate = new Rotate();
         rotate.setAngle(1*direction);
         rotate.setPivotX(posX);
@@ -45,6 +46,20 @@ public class CircleObstacle extends Obstacle{
         getArc2().getTransforms().add(rotate);
         getArc3().getTransforms().add(rotate);
         getArc4().getTransforms().add(rotate);
+
+        if(ch==1){
+            /*Translate translate = new Translate();
+            translate.setY(-vel);
+            this.posY -=vel;
+            getArc1().getTransforms().add(translate);
+            getArc2().getTransforms().add(translate);
+            getArc3().getTransforms().add(translate);
+            getArc4().getTransforms().add(translate);*/
+            getArc4().setLayoutY(getArc4().getLayoutY()-vel);
+            getArc1().setLayoutY(getArc1().getLayoutY()-vel);
+            getArc2().setLayoutY(getArc2().getLayoutY()-vel);
+            getArc3().setLayoutY(getArc3().getLayoutY()-vel);
+        }
     }
 
     @Override

@@ -11,10 +11,10 @@ public class DoubleCircleObstacle extends Obstacle{
     private CircleObstacle c2;
 
     @Override
-    public void move(){
+    public void move(float vel,int ch){
 
-        c1.move();
-        c2.move();
+        c1.move(vel,ch);
+        c2.move(vel,ch);
     }
 
     @Override

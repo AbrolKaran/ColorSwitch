@@ -33,7 +33,7 @@ public class TriangleObstacle extends Obstacle{
         return lines;
     }
 
-    public void move(){
+    public void move(float vel,int ch){
         Rotate rotate = new Rotate();
         rotate.setAngle(1*direction);
         rotate.setPivotX(posX+length/2);
@@ -41,6 +41,12 @@ public class TriangleObstacle extends Obstacle{
         getLine1().getTransforms().add(rotate);
         getLine2().getTransforms().add(rotate);
         getLine3().getTransforms().add(rotate);
+
+        if(ch==1){
+            getLine1().setLayoutY(getLine1().getLayoutY()-vel);
+            getLine2().setLayoutY(getLine2().getLayoutY()-vel);
+            getLine3().setLayoutY(getLine3().getLayoutY()-vel);
+        }
 
     }
 

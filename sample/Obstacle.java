@@ -26,7 +26,7 @@ public abstract class Obstacle {
 
     public abstract void generateDirection();
 
-    public abstract void move();
+    public abstract void move(float vel,int ch);
 
     public abstract void display(Group root);
 
