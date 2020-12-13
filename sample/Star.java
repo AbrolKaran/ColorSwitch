@@ -22,7 +22,7 @@ public class Star
 
         try
         {
-            this.star = new Image(new FileInputStream("Constants\\8.png"));
+            this.img = new Image(new FileInputStream("Constants\\8.png"));
         }
 
         catch (Exception e)
