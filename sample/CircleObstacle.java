@@ -3,6 +3,7 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
@@ -42,23 +43,15 @@ public class CircleObstacle extends Obstacle{
         rotate.setAngle(1*direction);
         rotate.setPivotX(posX);
         rotate.setPivotY(posY);
-        getArc1().getTransforms().add(rotate);
-        getArc2().getTransforms().add(rotate);
-        getArc3().getTransforms().add(rotate);
-        getArc4().getTransforms().add(rotate);
+
+        for(Arc ac: arcList){
+            ac.getTransforms().add(rotate);
+        }
 
         if(ch==1){
-            /*Translate translate = new Translate();
-            translate.setY(-vel);
-            this.posY -=vel;
-            getArc1().getTransforms().add(translate);
-            getArc2().getTransforms().add(translate);
-            getArc3().getTransforms().add(translate);
-            getArc4().getTransforms().add(translate);*/
-            getArc4().setLayoutY(getArc4().getLayoutY()-vel);
-            getArc1().setLayoutY(getArc1().getLayoutY()-vel);
-            getArc2().setLayoutY(getArc2().getLayoutY()-vel);
-            getArc3().setLayoutY(getArc3().getLayoutY()-vel);
+            for(Arc ac: arcList){
+                ac.setLayoutY(ac.getLayoutY()-vel);
+            }
         }
     }
 

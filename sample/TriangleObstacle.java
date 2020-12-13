@@ -38,14 +38,14 @@ public class TriangleObstacle extends Obstacle{
         rotate.setAngle(1*direction);
         rotate.setPivotX(posX+length/2);
         rotate.setPivotY(posY-length*0.288);
-        getLine1().getTransforms().add(rotate);
-        getLine2().getTransforms().add(rotate);
-        getLine3().getTransforms().add(rotate);
+        for(Line ln: lines){
+            ln.getTransforms().add(rotate);
+        }
 
         if(ch==1){
-            getLine1().setLayoutY(getLine1().getLayoutY()-vel);
-            getLine2().setLayoutY(getLine2().getLayoutY()-vel);
-            getLine3().setLayoutY(getLine3().getLayoutY()-vel);
+            for(Line ln: lines){
+                ln.setLayoutY(ln.getLayoutY()-vel);
+            }
         }
 
     }

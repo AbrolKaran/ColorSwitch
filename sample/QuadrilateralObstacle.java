@@ -41,16 +41,14 @@ public class QuadrilateralObstacle extends Obstacle {
         rotate.setAngle(1*direction);
         rotate.setPivotX(posX);
         rotate.setPivotY(posY);
-        getLine1().getTransforms().add(rotate);
-        getLine2().getTransforms().add(rotate);
-        getLine3().getTransforms().add(rotate);
-        getLine4().getTransforms().add(rotate);
+        for(Line ln: lines){
+            ln.getTransforms().add(rotate);
+        }
 
         if(ch==1){
-            getLine1().setLayoutY(getLine1().getLayoutY()-vel);
-            getLine2().setLayoutY(getLine2().getLayoutY()-vel);
-            getLine3().setLayoutY(getLine3().getLayoutY()-vel);
-            getLine4().setLayoutY(getLine4().getLayoutY()-vel);
+            for(Line ln: lines){
+                ln.setLayoutY(ln.getLayoutY()-vel);
+            }
         }
     }
 
@@ -85,7 +83,6 @@ public class QuadrilateralObstacle extends Obstacle {
         line4.setStrokeWidth(10);
         line4.setStroke(Color.web(colors.get(3)));
         line4.setStrokeLineCap(StrokeLineCap.ROUND);
-
 
         lines = new ArrayList<>();
         lines.add(line1);

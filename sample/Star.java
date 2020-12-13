@@ -1,6 +1,8 @@
 package sample;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import java.io.FileInputStream;
 
 public class Star
@@ -29,13 +31,15 @@ public class Star
         {
             System.out.println(e.getMessage());
         }
-        
+
+
         this.star = new ImageView(img);
         star.setFitHeight(27);
         star.setPreserveRatio(true);
         star.setLayoutX(_X);
         star.setLayoutY(_Y);
     }
+
 
     public ImageView getStar()
     {
@@ -44,7 +48,7 @@ public class Star
 
     public void move(float vel,int ch){
         if(ch==1){
-            //Imageview.setLayoutY(Imageview.getLayoutY()-vel);
+            getStar().setLayoutY(getStar().getLayoutY()-vel);
         }
     }
 

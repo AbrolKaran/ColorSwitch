@@ -1,6 +1,8 @@
 package sample;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import javafx.application.Application;
 import javafx.animation.*;
@@ -48,6 +50,9 @@ public class GamePlay extends Application
     private int id;
     private int score = 0;
     private ArrayList<String> colors;
+    private ArrayList<Obstacle> obstacles;
+    private ArrayList<Star> stars;
+    private ArrayList<ColorSwitcher> colorSwitchers;
     private float length = 650;
     private float width = 365;
     private int difficultyLevel;
@@ -179,8 +184,8 @@ public class GamePlay extends Application
         int ob1 = 0;
         int ob2 = 0;
 
-        //cr.display(root); ob2 = 0;
-        //fn.display(root); ob1 = 1;
+        cr.display(root); ob2 = 0;
+        fn.display(root); ob1 = 1;
         //sq.display(root); ob1 = 0;
         //dcr.display(root); ob2 = 0;
         //sqcr.display(root); ob1 = 0;
@@ -223,10 +228,6 @@ public class GamePlay extends Application
                 }
                 flag = 0;
                 cr.move(vel,ch);
-                moveIm(csView1,vel,ch);
-                moveIm(csView2,vel,ch);
-                moveIm(starView1,vel,ch);
-                moveIm(starView2,vel,ch);
                 fn.move(vel,ch);
                 sq.move(vel,ch);
                 dcr.move(vel,ch);
@@ -234,6 +235,10 @@ public class GamePlay extends Application
                 crfn.move(vel,ch);
                 tn.move(vel,ch);
                 qd.move(vel,ch);
+                s1.move(vel,ch);
+                s2.move(vel,ch);
+                CS1.move(vel,ch);
+                CS2.move(vel,ch);
 
 
             }
@@ -244,10 +249,6 @@ public class GamePlay extends Application
         stage.setScene(scene);
         stage.show();
 
-        Bounds bounds = root.getBoundsInLocal();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), new KeyValue(ball.display().layoutYProperty(), bounds.getMaxY()-ball.display().getRadius())));
-        timeline.setCycleCount(500);
-        timeline.play();
     }
 
     /*public void placeStar(int ob1, int ob2, Group root)
@@ -291,5 +292,4 @@ public class GamePlay extends Application
     }*/
 }
 
-}
 

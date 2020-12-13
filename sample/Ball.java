@@ -17,7 +17,7 @@ public class Ball
 
     public Ball(float posX, float posY, float vel, int _radius, int _color)
     {
-        this.acceleration = 0.4;
+        this.acceleration = 0.4f;
         this.velocity = vel;
         this.radius = _radius;
         this.X = posX;
