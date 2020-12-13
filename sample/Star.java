@@ -9,7 +9,8 @@ public class Star
     private float X;
     private float Y;
     private int state;
-    private Image star;
+    private Image img;
+    private ImageView star;
 
 
     public Star(float _X, float _Y)
@@ -28,9 +29,15 @@ public class Star
         {
             System.out.println(e.getMessage());
         }
+        
+        this.star = new ImageView(img);
+        star.setFitHeight(27);
+        star.setPreserveRatio(true);
+        star.setLayoutX(_X);
+        star.setLayoutY(_Y);
     }
 
-    public Image getStar()
+    public ImageView getStar()
     {
         return star;
     }
