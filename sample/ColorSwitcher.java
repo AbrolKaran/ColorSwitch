@@ -29,7 +29,7 @@ public class ColorSwitcher
 
         try
         {
-            this.cs = new Image(new FileInputStream("Constants\\7.png"));
+            this.img = new Image(new FileInputStream("Constants\\7.png"));
         }
 
         catch (Exception e)
