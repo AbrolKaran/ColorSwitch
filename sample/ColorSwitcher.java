@@ -11,7 +11,8 @@ public class ColorSwitcher
     private float X;
     private float Y;
     private int radius;
-    private Image cs;
+    private Image img;
+    private ImageView cs;
 
     public ColorSwitcher(ArrayList<String> colors, int _radius, float _X, float _Y)
     {
@@ -35,9 +36,15 @@ public class ColorSwitcher
         {
             System.out.println(e.getMessage());
         }
+        
+        this.cs = new ImageView(img);
+        cs.setFitHeight(_radius);
+        cs.setPreserveRatio(true);
+        cs.setLayoutX(_X);
+        cs.setLayoutY(_Y);
     }
 
-    public Image getCs()
+    public ImageView getCs()
     {
         return cs;
     }

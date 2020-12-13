@@ -132,36 +132,19 @@ public class GamePlay extends Application
         scoreLabel.setLayoutY(0);
 
         //create stars
-        Image star1 = (new Star(146, 50)).getStar();
-        ImageView starView1 = new ImageView(star1);
-        starView1.setFitHeight(27);
-        starView1.setPreserveRatio(true);
-        starView1.setLayoutX(posX-16);
-        starView1.setLayoutY(150);
-        starView1.setLayoutY(80);
+        Star s1 = new Star(posX-16, 150);
+        ImageView starView1 = s1.getStar();
 
-        Image star2 = (new Star(146, 50)).getStar();
-        ImageView starView2 = new ImageView(star2);
-        starView2.setFitHeight(27);
-        starView2.setPreserveRatio(true);
-        starView2.setLayoutX(posX-16);
-        starView2.setLayoutY(403);
-        starView2.setLayoutY(349);
+        Star s2 = new Star(posX-16, 403);
+        ImageView starView2 = s2.getStar();
+
 
         //create color switchers
-        Image cs1 = (new ColorSwitcher(colors, 27, 146, 10)).getCs();
-        ImageView csView1 = new ImageView(cs1);
-        csView1.setFitHeight(27);
-        csView1.setPreserveRatio(true);
-        csView1.setLayoutX(posX-16);
-        csView1.setLayoutY(10);
+        ColorSwitcher CS1 = new ColorSwitcher(colors, 27, posX-16, 10);
+        ImageView csView1 = CS1.getCs();
 
-        Image cs2 = new Image(new FileInputStream("Constants\\7.png"));
-        ImageView csView2 = new ImageView(cs2);
-        csView2.setFitHeight(27);
-        csView2.setPreserveRatio(true);
-        csView2.setLayoutX(posX-16);
-        csView2.setLayoutY(270);
+        ColorSwitcher CS2 = new ColorSwitcher(colors, 27, posX-16, 270);
+        ImageView csView2 = CS2.getCs();
 
 
         Ball ball = new Ball(posX,530, -6.5f, 7, 2);
@@ -183,6 +166,8 @@ public class GamePlay extends Application
             @Override
             public void handle(KeyEvent keyEvent) {
                 flag = 1;
+                ball.move(flag);
+                flag = 0;
             }
         };
 
@@ -258,12 +243,11 @@ public class GamePlay extends Application
         // set the scene
         stage.setScene(scene);
         stage.show();
-    }
 
-    public static void moveBack(Group r,float vel){
-        Translate translate = new Translate();
-        translate.setY(-vel);
-        r.getTransforms().add(translate);
+        Bounds bounds = root.getBoundsInLocal();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), new KeyValue(ball.display().layoutYProperty(), bounds.getMaxY()-ball.display().getRadius())));
+        timeline.setCycleCount(500);
+        timeline.play();
     }
 
     /*public void placeStar(int ob1, int ob2, Group root)
@@ -305,12 +289,6 @@ public class GamePlay extends Application
         root.getChildren().addAll(starView1, starView2);
 
     }*/
-
-    //temp code for moving images
-    public static void moveIm(ImageView im,float vel,int ch){
-    if(ch==1){
-        im.setLayoutY(im.getLayoutY() - vel);
-    }
 }
 
 }
