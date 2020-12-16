@@ -1,18 +1,20 @@
 package sample;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import javafx.application.Application;
 import javafx.animation.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import java.awt.Rectangle;
 import javafx.scene.shape.Circle;
-import javafx.scene.transform.Translate;
+//import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import javafx.scene.transform.Rotate;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
@@ -36,7 +38,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -48,26 +49,274 @@ import java.io.FileInputStream;
 public class GamePlay extends Application
 {
     private int id;
-    private int score = 0;
+    private int score;
+    private Label scoreLabel;
+    private Ball ball;
     private ArrayList<String> colors;
     private ArrayList<Obstacle> obstacles;
-    private ArrayList<Star> stars;
     private ArrayList<ColorSwitcher> colorSwitchers;
+    private ArrayList<Star> stars;
     private float length = 650;
     private float width = 365;
     private int difficultyLevel;
-    int flag = 0;
+    private int diff;
+    private int flag = 0;
+    private int obCount;
+    private float prevY;
+    private ArrayList<SmallBall> smallBalls;
+
+
+    public GamePlay()
+    {
+        this.score = 0;
+        this.obstacles = new ArrayList<>();
+        this.colorSwitchers = new ArrayList<>();
+        this.stars = new ArrayList<>();
+        this.smallBalls = new ArrayList<>();
+        this.difficultyLevel = 0;
+        this.obCount = 2;
+        this.prevY = 160;
+        this.diff = 0;
+
+        this.colors = new ArrayList<>();
+        colors.add("#38B6FF");
+        colors.add("#CB6CE6");
+        colors.add("#FFDE59");
+        colors.add("#FF5757");
+    }
 
     @Override
     public void start(Stage stage) throws Exception
     {
         float posX = width/2;
 
-        colors = new ArrayList<>();
-        colors.add("#38B6FF");
-        colors.add("#CB6CE6");
-        colors.add("#FFDE59");
-        colors.add("#FF5757");
+        Group root = new Group();
+
+        displayOptions(root);
+
+        // create quit button
+        Button end = new Button("QUIT GAME");
+        end.setLayoutX(width - 100);
+        end.setLayoutY(length - 60);
+        end.setStyle("-fx-background-color: #000000; -fx-font-size: 13");
+        end.setTextFill(Color.WHITE);
+        //Setting the size of the button
+        end.setPrefSize(100, 40);
+
+        end.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent actionEvent)
+            {
+                try
+                {
+                    stage.close();
+                    (new GameOverPage()).start(new Stage());
+                }
+
+                catch (Exception e)
+                {
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
+
+
+        //create stars
+        Star s1 = new Star(posX-16, 75);
+        ImageView starView1 = s1.getStar();
+
+        Star s2 = new Star(posX-16, 403);
+        ImageView starView2 = s2.getStar();
+
+        stars.add(s1);
+        stars.add(s2);
+
+
+        //create color switchers
+        ColorSwitcher CS2 = new ColorSwitcher(colors, 27, posX-16, 270);
+        ImageView csView2 = CS2.getCs();
+
+        colorSwitchers.add(CS2);
+
+
+        this.ball = new Ball(posX,530, -6.5f, 7, colors.get(0));
+
+        float posY = 160;
+        float posY2 = 420;
+
+        obstacles.add(new CircleObstacle(1, colors, posX, posY2, 60, 1));
+        obstacles.add(new FanObstacle(1, colors, posX+30, posY, 50, 1));
+
+        /*obstacles.add(new SquareObstacle(1, colors, posX-50, -100, 90, 1));
+        obstacles.add(new DoubleCircleObstacle(1, colors, posX, -360, 60, 1));
+        obstacles.add(new SquareCircleObstacle(1, colors, posX, -620, 60, 1));
+        obstacles.add(new CircleFanObstacle(1,colors,posX,-880,60,1));
+        obstacles.add(new TriangleObstacle(1,colors,posX-70,-1140,140,1));
+        obstacles.add(new QuadrilateralObstacle(1,colors,posX,-1400,100,1));*/
+
+
+        EventHandler<KeyEvent> eventEventHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent)
+            {
+                flag = 1;
+                ball.move(flag);
+                flag = 0;
+            }
+        };
+
+        for(Obstacle ob : obstacles)
+        {
+            ob.display(root);
+        }
+
+        root.getChildren().addAll(ball.display(), end);
+        root.getChildren().addAll(csView2, starView1, starView2);
+
+        //Creating the scroll pane
+        ScrollPane scroll = new ScrollPane();
+        scroll.setPrefSize(324, 576);
+
+        //Setting content to the scroll pane
+        scroll.setContent(root);
+
+        // create a scene
+        Scene scene = new Scene(root, width, length, Color.BLACK);
+        scene.setOnKeyPressed(e -> {
+            if(e.getCode().equals(KeyCode.A));
+            {
+                flag=1;
+
+                //CircleObstacle cr = (CircleObstacle)obstacles.get(0);
+                //System.out.println("Obstacle 1 Y : " + cr.getY());
+                //System.out.println("Distance with ball : " + (cr.getY() - ball.getY()));
+                System.out.println("Num obstacles : " + obstacles.size());
+
+                //this.placeObstacle(root);
+
+
+            }
+        });
+
+
+        AnimationTimer timer = new AnimationTimer()
+        {
+            @Override
+            public void handle(long l)
+            {
+                float vel = ball.getVelocity();
+                int ch;
+                if(ball.getY()<=length/2 && vel<0) {
+                    ch=1;
+                    ball.updateVel(flag);
+                }
+                else{
+                    ch=0;
+                    ball.move(flag);
+                }
+                flag = 0;
+
+                for(Obstacle ob : obstacles)
+                {
+                    ob.move(vel, ch);
+                    if(ob.intersect(ball))
+                    {
+                        System.out.println("intersect");
+                        //gameOver(root);
+                    }
+                }
+
+                for(Obstacle ob : obstacles)
+                {
+                    if(ob.offscreen(ball))
+                    {
+                        obstacles.remove(ob);
+                        diff--;
+                        System.out.println("removed " + obstacles.size());
+                        break;
+                    }
+                }
+
+                placeObstacle(root);
+
+                /*if(scoreDiff > 2)
+                {
+                    obstacles.remove(0);
+                    scoreDiff = 0;
+                }*/
+
+                for(Star s : stars)
+                {
+                    s.move(vel, ch);
+                    if(s.intersect(ball))
+                    {
+                        collectStar(s);
+                    }
+                }
+
+                for(Star s : stars)
+                {
+                    if(!s.getStar().isVisible())
+                    {
+                        stars.remove(s);
+                        break;
+                    }
+                }
+
+                for(ColorSwitcher cs : colorSwitchers)
+                {
+                    cs.move(vel, ch);
+                    if(cs.intersect(ball))
+                    {
+                        useColorSwitcher(cs);
+                    }
+                }
+
+                for(ColorSwitcher cs : colorSwitchers)
+                {
+                    if(!cs.getCs().isVisible())
+                    {
+                        colorSwitchers.remove(cs);
+                        break;
+                    }
+                }
+            }
+        };
+
+        timer.start();
+
+        // set the scene
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void collectStar(Star s)
+    {
+        s.getStar().setVisible(false);
+        score += s.getPoints();
+        s.setPoints(0);
+        this.scoreLabel.setText(Integer.toString(score));
+    }
+
+    public void useColorSwitcher(ColorSwitcher cs)
+    {
+        if(cs.getState() == 0)
+        {
+            cs.setState(1);
+            cs.getCs().setVisible(false);
+            cs.switchColor(ball);
+        }
+    }
+
+    public void displayOptions(Group root) throws Exception
+    {
+        //set score
+        this.scoreLabel = new Label(Integer.toString(score));
+        scoreLabel.setStyle("-fx-font-size: 35");
+        scoreLabel.setTextFill(Color.WHITE);
+        scoreLabel.setLayoutX(20);
+        scoreLabel.setLayoutY(0);
 
         //Creating graphic pause
         Image img = new Image(new FileInputStream("Pause\\Pause2.png"));
@@ -102,194 +351,228 @@ public class GamePlay extends Application
             }
         });
 
-        // create quit button
-        Button end = new Button("QUIT GAME");
-        end.setLayoutX(width - 100);
-        end.setLayoutY(length - 60);
-        end.setStyle("-fx-background-color: #000000; -fx-font-size: 13");
-        end.setTextFill(Color.WHITE);
-        //Setting the size of the button
-        end.setPrefSize(100, 40);
+        root.getChildren().addAll(scoreLabel, pause);
+    }
 
-        end.setOnAction(new EventHandler<ActionEvent>()
+    public float getPrevY() {
+        return obstacles.get(obstacles.size()-1).getY();
+    }
+
+    public void setPrevY(float val) {
+        this.prevY -= val;
+    }
+
+    public int getObCount() {
+        return obCount;
+    }
+
+    public void setObCount() {
+
+        if(this.obCount < 7)
         {
-            @Override
-            public void handle(ActionEvent actionEvent)
-            {
-                try
-                {
-                    stage.close();
-                    (new GameOverPage()).start(new Stage());
-                }
+            this.obCount += 1;
+        }
 
-                catch (Exception e)
-                {
-                     System.out.println(e.getMessage());
-                }
-            }
-        });
-
-        //set score
-        Label scoreLabel = new Label(Integer.toString(score));
-        scoreLabel.setStyle("-fx-font-size: 35");
-        scoreLabel.setTextFill(Color.WHITE);
-        scoreLabel.setLayoutX(20);
-        scoreLabel.setLayoutY(0);
-
-        //create stars
-        Star s1 = new Star(posX-16, 150);
-        ImageView starView1 = s1.getStar();
-
-        Star s2 = new Star(posX-16, 403);
-        ImageView starView2 = s2.getStar();
-
-
-        //create color switchers
-        ColorSwitcher CS1 = new ColorSwitcher(colors, 27, posX-16, 10);
-        ImageView csView1 = CS1.getCs();
-
-        ColorSwitcher CS2 = new ColorSwitcher(colors, 27, posX-16, 270);
-        ImageView csView2 = CS2.getCs();
-
-
-        Ball ball = new Ball(posX,530, -6.5f, 7, 2);
-
-
-        float posY = 160;
-        float posY2 = 420;
-
-        Obstacle cr = new CircleObstacle(1, colors, posX, posY2, 60, 1);
-        Obstacle fn = new FanObstacle(1, colors, posX+30, posY, 50, 1);
-        Obstacle sq = new SquareObstacle(1, colors, posX-50, posY-50, 90, 1);
-        Obstacle dcr = new DoubleCircleObstacle(1, colors, posX, posY2, 60, 1);
-        Obstacle sqcr = new SquareCircleObstacle(1, colors, posX, posY, 60, 1);
-        Obstacle crfn = new CircleFanObstacle(1,colors,posX,posY2,60,1);
-        Obstacle tn = new TriangleObstacle(1,colors,posX-70,posY2+30,140,1);
-        Obstacle qd = new QuadrilateralObstacle(1,colors,posX,posY,100,1);
-
-        EventHandler<KeyEvent> eventEventHandler = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                flag = 1;
-                ball.move(flag);
-                flag = 0;
-            }
-        };
-
-
-
-        /*Group root = new Group(((CircleObstacle)ob).getArc4(),((CircleObstacle)ob).getArc1(),((CircleObstacle)ob).getArc2(),((CircleObstacle)ob).getArc3());
-        root.getChildren().addAll(((FanObstacle)fn).getR1(), ((FanObstacle)fn).getR2(), ((FanObstacle)fn).getR3(), ((FanObstacle)fn).getR4());*/
-        Group root = new Group();
-        int ob1 = 0;
-        int ob2 = 0;
-
-        cr.display(root); ob2 = 0;
-        fn.display(root); ob1 = 1;
-        //sq.display(root); ob1 = 0;
-        //dcr.display(root); ob2 = 0;
-        //sqcr.display(root); ob1 = 0;
-        //crfn.display(root); ob2 = 1;
-        //tn.display(root); ob2 = 0;
-        //qd.display(root); ob1 = 0;
-
-        //this.placeStar(ob1, ob2, root);
-
-        root.getChildren().addAll(ball.display(), pause, end);
-        root.getChildren().addAll(scoreLabel, csView1, csView2,starView1,starView2);
-        //Creating the scroll pane
-        ScrollPane scroll = new ScrollPane();
-        scroll.setPrefSize(324, 576);
-        //Setting content to the scroll pane
-        scroll.setContent(root);
-
-        // create a scene
-        Scene scene = new Scene(root, width, length, Color.BLACK);
-        scene.setOnKeyPressed(e -> {
-            if(e.getCode().equals(KeyCode.SHIFT));
-            {
-                flag=1;
-            }
-        });
-        AnimationTimer timer = new AnimationTimer()
+        else
         {
-            @Override
-            public void handle(long l)
-            {
-                float vel = ball.getVelocity();
-                int ch;
-                if(ball.getY()<=length/2 && vel<0) {
-                    ch=1;
-                    ball.updateVel(flag);
-                }
-                else{
-                    ch=0;
-                    ball.move(flag);
-                }
-                flag = 0;
-                cr.move(vel,ch);
-                fn.move(vel,ch);
-                sq.move(vel,ch);
-                dcr.move(vel,ch);
-                sqcr.move(vel,ch);
-                crfn.move(vel,ch);
-                tn.move(vel,ch);
-                qd.move(vel,ch);
-                s1.move(vel,ch);
-                s2.move(vel,ch);
-                CS1.move(vel,ch);
-                CS2.move(vel,ch);
-
-
-            }
-        };
-
-        timer.start();
-        // set the scene
-        stage.setScene(scene);
-        stage.show();
+            this.obCount = 0;
+        }
 
     }
 
-    /*public void placeStar(int ob1, int ob2, Group root)
+    public void placeStar(float _Y, Group root)
+    {
+        Star star = new Star((width/2) - 16, _Y);
+        root.getChildren().add(star.getStar());
+        this.stars.add(star);
+    }
+    
+    public void placeCS(float Y1, float Y2, Group root, ArrayList<String> myColors)
+    {
+        float _Y = (Y1 + Y2) / 2;
+        ColorSwitcher cs = new ColorSwitcher(myColors, 27, (width/2)-16, _Y);
+        root.getChildren().add(cs.getCs());
+        this.colorSwitchers.add(cs);
+    }
+
+    public void updateObstacles()
+    {
+        if(diff < 32)
+        {
+            diff += 8;
+        }
+
+        else
+        {
+            diff = 0;
+        }
+
+    }
+
+    public void placeObstacle(Group root)
     {
         float posX = width/2;
-        //create stars
-        Image star1 = (new Star(146, 50)).getStar();
-        ImageView starView1 = new ImageView(star1);
-        starView1.setFitHeight(27);
-        starView1.setPreserveRatio(true);
-        starView1.setLayoutX(posX-16);
 
-        if(ob1 == 0)
+        if(obstacles.size() < 10){
+
+        switch(getObCount())
         {
-            starView1.setLayoutY(150);
+            case 0 :
+                Obstacle newOb = new CircleObstacle(1, colors, posX, getPrevY()-310, 60, 1);
+                placeCS(getPrevY(), getPrevY()-310, root, newOb.getMyColors());
+                obstacles.add(newOb);
+
+                System.out.println("Prev Y : " + getPrevY());
+                newOb.display(root);
+
+                setPrevY(260);
+                setObCount();
+                placeStar(newOb.getPosY() - 15, root);
+                break;
+
+            case 1 :
+                Obstacle newOb1 = new FanObstacle(1, colors, posX+30, getPrevY()-310, 50, 1);
+                placeCS(getPrevY(), getPrevY()-310, root, newOb1.getMyColors());
+                obstacles.add(newOb1);
+                newOb1.display(root);
+
+                System.out.println("Prev Y : " + getPrevY());
+                setPrevY(260);
+
+                setObCount();
+                placeStar(newOb1.getPosY() - 90, root);
+                break;
+
+            case 2 :
+                Obstacle newOb2 = new SquareObstacle(1, colors, posX-50, getPrevY()-360, 90, 1);
+                placeCS(getPrevY(), getPrevY()-360, root, newOb2.getMyColors());
+                obstacles.add(newOb2);
+                newOb2.display(root);
+                //System.out.println("Prev Y : " + getPrevY());
+                setPrevY(310);
+                setObCount();
+                placeStar(newOb2.getPosY() + 35, root);
+                break;
+
+            case 3 :
+                Obstacle newOb3 = new TriangleObstacle(1,colors,posX-70,getPrevY()-230,140,1);
+                placeCS(getPrevY(), getPrevY()-230, root, newOb3.getMyColors());
+                obstacles.add(newOb3);
+                newOb3.display(root);
+                System.out.println("Prev Y : " + getPrevY());
+
+
+                setPrevY(180);
+                setObCount();
+                placeStar(newOb3.getPosY() - 45, root);
+                break;
+
+            case 4 :
+                Obstacle newOb4 = new QuadrilateralObstacle(1,colors,posX,getPrevY()-380,100,1);
+                placeCS(getPrevY(), getPrevY()-380, root, newOb4.getMyColors());
+                obstacles.add(newOb4);
+                System.out.println("Prev Y : " + getPrevY());
+
+                newOb4.display(root);
+
+                setPrevY(330);
+                setObCount();
+                placeStar(newOb4.getPosY() - 20, root);
+                break;
+
+            case 5 :
+                Obstacle newOb5 = new DoubleCircleObstacle(1, colors, posX, getPrevY()-350, 60, 1);
+                placeCS(getPrevY(), getPrevY()-350, root, newOb5.getMyColors());
+                obstacles.add(newOb5);
+                newOb5.display(root);
+
+                System.out.println("Prev Y : " + getPrevY());
+
+                setPrevY(300);
+                setObCount();
+                placeStar(newOb5.getPosY() - 15, root);
+                break;
+
+            case 6 :
+                Obstacle newOb6 = new SquareCircleObstacle(1, colors, posX, getPrevY()-350, 60, 1);
+                placeCS(getPrevY(), getPrevY()-350, root, newOb6.getMyColors());
+
+                obstacles.add(newOb6);
+                newOb6.display(root);
+
+                System.out.println("Prev Y : " + getPrevY());
+
+                setPrevY(300);
+                setObCount();
+                placeStar(newOb6.getPosY() - 15, root);
+                break;
+
+            case 7 :
+                Obstacle newOb7 = new CircleFanObstacle(1,colors,posX,getPrevY()-350,80,1);
+                placeCS(getPrevY(), getPrevY()-350, root, newOb7.getMyColors());
+                obstacles.add(newOb7);
+
+                System.out.println("Prev Y : " + getPrevY());
+
+                newOb7.display(root);
+
+                setPrevY(300);
+                setObCount();
+                placeStar(newOb7.getPosY() - 70, root);
+                break;
+        }}
+    }
+
+    public void gameOver(Group root)
+    {
+        for(int i=0; i<20; i++)
+        {
+            smallBalls.add(new SmallBall(this.colors, ball.getX(), ball.getY(), 3));
         }
 
-        else if(ob1 == 1)
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(20),
+                new EventHandler<ActionEvent>()
         {
-            starView1.setLayoutY(80);
-        }
+            double dx = 7;
+            double dy = 3;
 
-        Image star2 = (new Star(146, 50)).getStar();
-        ImageView starView2 = new ImageView(star2);
-        starView2.setFitHeight(27);
-        starView2.setPreserveRatio(true);
-        starView2.setLayoutX(posX-16);
+            @Override
+            public void handle(ActionEvent t)
+            {
+                //for(int j = 0; j < smallBalls.size(); j++)
+                //{
+                    smallBalls.get(0).display(root);
+                    Circle small = smallBalls.get(0).getSmallBall();
+                    small.setLayoutX(small.getLayoutX() + dx);
+                    small.setLayoutY(small.getLayoutY() + dy);
 
-        if(ob2 == 0)
-        {
-            starView2.setLayoutY(403);
-        }
+                    /*Bounds bounds = root.getBoundsInLocal();
 
-        else if(ob2 == 1)
-        {
-            starView2.setLayoutY(349);
-        }
+                    //If the ball reaches the left or right border make the step negative
+                    if(small.getLayoutX() == (bounds.getMinX() + small.getRadius()) ||
+                            small.getLayoutX() >= (bounds.getMaxX() - small.getRadius()) ){
 
-        root.getChildren().addAll(starView1, starView2);
+                        dx = -dx;
+                    }
 
-    }*/
+                    //If the ball reaches the bottom or top border make the step negative
+                    if((small.getLayoutY() >= (bounds.getMaxY() - small.getRadius())) ||
+                            (small.getLayoutY() == (bounds.getMinY() + small.getRadius()))){
+
+                        dy = -dy;
+
+                    }*/
+                /*if (smallBalls.get(j).offscreen())
+                {
+                    smallBalls.get(j).getSmallBall().setVisible(false);
+                    //numOffScreen++;
+                }*/
+                //}
+            }
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+
+
+    }
 }
-
-

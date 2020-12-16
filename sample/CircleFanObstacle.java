@@ -11,8 +11,8 @@ public class CircleFanObstacle extends Obstacle{
     @Override
     public void move(float vel,int ch){
 
-        f1.move(vel,ch);
-        c1.move(vel,ch);
+        f1.move(vel, ch);
+        c1.move(vel, ch);
     }
 
     @Override
@@ -26,8 +26,6 @@ public class CircleFanObstacle extends Obstacle{
         c1.display(r);
     }
 
-
-
     public FanObstacle getS1() {
         return f1;
     }
@@ -40,5 +38,28 @@ public class CircleFanObstacle extends Obstacle{
         super(d,c,x,y,l,dir);
         f1 = new FanObstacle(d,c,x+20,y,l-10,dir);
         c1 = new CircleObstacle(d,c,x,y,l+20,-1*dir);
+        myColors = new ArrayList<String>();
+        myColors.add("#FF5757");
+        myColors.add("#FFDE59");
+        myColors.add("#CB6CE6");
     }
+
+    @Override
+    public boolean intersect(Ball ball)
+    {
+        return c1.intersect(ball) || f1.intersect(ball);
+    }
+
+    @Override
+    public boolean offscreen(Ball ball)
+    {
+        return c1.offscreen(ball);
+    }
+
+    @Override
+    public float getY()
+    {
+        return c1.getY();
+    }
+
 }

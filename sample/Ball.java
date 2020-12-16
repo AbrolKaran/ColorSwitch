@@ -3,6 +3,7 @@ package sample;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Translate;
+import java.awt.Rectangle;
 
 public class Ball
 {
@@ -10,20 +11,20 @@ public class Ball
     private float Y;
     private final double acceleration;
     private float velocity;
-    private int color;
+    private String color;
     private int radius;
     private int state;
     private Circle ball;
 
-    public Ball(float posX, float posY, float vel, int _radius, int _color)
+    public Ball(float posX, float posY, float vel, int _radius, String _color)
     {
-        this.acceleration = 0.4f;
+        this.acceleration = 0.4;
         this.velocity = vel;
         this.radius = _radius;
         this.X = posX;
         this.Y = posY;
         this.color = _color;
-        this.ball = new Circle(X,Y, radius, Color.web("#38B6FF"));
+        this.ball = new Circle(X,Y, radius, Color.web(_color));
     }
 
 
@@ -39,22 +40,43 @@ public class Ball
         return this.ball;
     }
 
-    public float getVelocity() {
-        return velocity;
-    }
-
-    public float getY() {
-        return Y;
-    }
-
     public void move(int flag){
         updateVel(flag);
-        this.Y +=velocity;
         Translate translate = new Translate();
         translate.setX(0);
         translate.setY(velocity);
+        Y = Y + velocity;
         this.ball.getTransforms().addAll(translate);
+    }
 
+    public float getY()
+    {
+        return Y;
+    }
+
+    public float getX()
+    {
+        return X;
+    }
+
+    public float getVelocity()
+    {
+        return velocity;
+    }
+
+    public void setColor(String color)
+    {
+        this.color = color;
+    }
+
+    public String getColor()
+    {
+        return color;
+    }
+
+    public Rectangle getBounds()
+    {
+        return new Rectangle((int)ball.getCenterX(), (int)ball.getCenterY(), (int)(2*ball.getRadius()), (int)(2*ball.getRadius()));
     }
 
 }

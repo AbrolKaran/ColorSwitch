@@ -3,10 +3,10 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
+import  javafx.geometry.Bounds;
 
 import java.util.ArrayList;
 
@@ -49,6 +49,7 @@ public class CircleObstacle extends Obstacle{
         }
 
         if(ch==1){
+            Y -= vel;
             for(Arc ac: arcList){
                 ac.setLayoutY(ac.getLayoutY()-vel);
             }
@@ -68,6 +69,12 @@ public class CircleObstacle extends Obstacle{
     public CircleObstacle(int d, ArrayList<String> c,float x, float y,float l, int dir){
 
         super(d,c,x,y,l,dir);
+        myColors = new ArrayList<String>();
+        myColors.add(colors.get(0));
+        myColors.add(colors.get(1));
+        myColors.add(colors.get(2));
+        myColors.add(colors.get(3));
+        this.posY = y;
         this.length = l;
         this.direction = dir;
         arc1 = new Arc();
@@ -124,4 +131,33 @@ public class CircleObstacle extends Obstacle{
         arcList.add(arc3);
         arcList.add(arc4);
     }
+
+    @Override
+    public boolean intersect(Ball ball)
+    {
+        Shape shape1 = Shape.intersect(ball.display(), arc1);
+        Shape shape2 = Shape.intersect(ball.display(), arc2);
+        Shape shape3 = Shape.intersect(ball.display(), arc3);
+        Shape shape4 = Shape.intersect(ball.display(), arc4);
+
+        boolean cond1 = !shape1.getBoundsInLocal().isEmpty() && !colors.get(0).equals(ball.getColor());
+        boolean cond2 = !shape2.getBoundsInLocal().isEmpty() && !colors.get(1).equals(ball.getColor());
+        boolean cond3 = !shape3.getBoundsInLocal().isEmpty() && !colors.get(2).equals(ball.getColor());
+        boolean cond4 = !shape4.getBoundsInLocal().isEmpty() && !colors.get(3).equals(ball.getColor());
+
+        return cond1 || cond2 || cond3 || cond4;
+    }
+
+    @Override
+    public boolean offscreen(Ball ball)
+    {
+        if(this.getY() - ball.getY() > 800)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+
 }

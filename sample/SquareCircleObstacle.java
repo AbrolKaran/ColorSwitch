@@ -40,6 +40,28 @@ public class SquareCircleObstacle extends Obstacle{
         super(d,c,x,y,l,dir);
         s1 = new SquareObstacle(d,c,x-(l+100)/2,y-(l+100)/2,l+90,dir);
         c1 = new CircleObstacle(d,c,x,y,l,-1*dir);
+
+        myColors = new ArrayList<>();
+        myColors.add("#CB6CE6");
     }
+
+    @Override
+    public boolean intersect(Ball ball)
+    {
+        return s1.intersect(ball) || c1.intersect(ball);
+    }
+
+    @Override
+    public boolean offscreen(Ball ball)
+    {
+        return s1.offscreen(ball);
+    }
+
+    @Override
+    public float getY()
+    {
+        return c1.getY();
+    }
+
 
 }
