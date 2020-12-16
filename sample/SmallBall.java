@@ -18,6 +18,11 @@ public class SmallBall
     private double xVelocity;
     private double yVelocity;
     private double gravity;
+    private double dx = this.velocity(), dy = this.velocity();
+    private int movement;
+    private int spawnPoint;
+    private float WIDTH = 365;
+    private float HEIGHT = 650;
 
     private static Random rand = new Random();
 
@@ -36,6 +41,73 @@ public class SmallBall
         String newColor = colors.get(color);
         this.smallBall = new Circle(X,Y, radius, Color.web(newColor));
     }
+
+    public int getMovement() {
+        return movement;
+    }
+
+    public void setMovement(int movement) {
+        this.movement = movement;
+    }
+
+    public int getSpawnPoint() {
+        return spawnPoint;
+    }
+
+    public void setSpawnPoint(int spawnPoint) {
+        this.spawnPoint = spawnPoint;
+    }
+
+    public int velocity(){
+        movement = rand.nextInt(1);
+        if (movement == 1) {
+            movement = rand.nextInt(10);
+        }
+        else if (movement == 0) {
+            movement = (rand.nextInt(10)*-1);
+        }
+        return movement;
+    }
+
+    public int position(){
+        return spawnPoint = rand.nextInt(500);
+
+    }
+
+    public double getDx() { return dx; }
+
+    public final void setDx(double newDx) {
+        while (newDx < -10 || newDx > 10) {
+            newDx = this.velocity();
+        }
+        dx = newDx;
+    }
+
+    public double getDy() { return dy; }
+
+    public final void setDy(double newDy) {
+        while(newDy < -10 || newDy > 10) {
+            newDy = this.velocity();
+        }
+        dy = newDy;
+    }
+
+    public void moveBall() {
+        // Check boundaries
+        if (X < radius || X > this.WIDTH - radius) {
+            dx *= -1; // Change ball move direction
+        }
+        if (Y < radius || Y > this.HEIGHT - radius) {
+            dy *= -1; // Change ball move direction
+        }
+        // Adjust ball position
+        X += dx;
+        Y += dy;
+        smallBall.setCenterX(X);
+        smallBall.setCenterY(Y);
+    }
+
+
 
     public void update()
     {

@@ -1,6 +1,10 @@
 package sample;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Optional;
 
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
 import javafx.animation.RotateTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -26,67 +30,97 @@ import javafx.util.Duration;
 
 public class PausePage extends Application
 {
+    AnimationTimer timer2;
+    GameState gameState;
+    Stage game;
+
+    public PausePage(AnimationTimer timer, GameState gm, Stage g)
+    {
+        this.timer2 = timer;
+        this.gameState = gm;
+        this.game = g;
+    }
     @Override
     public void start(Stage stage) throws Exception
     {
         try
         {
+            ArrayList<String> colors = new ArrayList<>();
+            colors.add("#38B6FF");
+            colors.add("#CB6CE6");
+            colors.add("#FFDE59");
+            colors.add("#FF5757");
+
             // set title for the stage
             stage.setTitle("Pause Page");
 
-            //Create outer ring
-            Image outerRing = new Image(new FileInputStream("Rings2\\5.png"));
-            ImageView ringview = new ImageView(outerRing);
-            ringview.setFitHeight(190);
-            ringview.setPreserveRatio(true);
-            ringview.setTranslateX(275);
-            ringview.setTranslateY(25);
+            //HBox hbox = new HBox();
+            StackPane pane = new StackPane();
+            pane.setPadding(new Insets(20));
 
-            //Create inner ring
-            Image innerRing = new Image(new FileInputStream("Rings2\\5.png"));
-            ImageView ringview2 = new ImageView(innerRing);
-            ringview2.setFitHeight(80);
-            ringview2.setPreserveRatio(true);
-            ringview2.setTranslateX(135);
-            ringview2.setTranslateY(25);
+            Group root = new Group();
+            Group root2 = new Group();
+            Group root3 = new Group();
+            //Group root4 = new Group();
 
-            //Instantiating RotateTransition class
-            RotateTransition rotate = new RotateTransition();
-            rotate.setAxis(Rotate.Z_AXIS);
-            rotate.setByAngle(360);
-            rotate.setCycleCount(500);
-            rotate.setDuration(Duration.millis(1000));
-            rotate.setAutoReverse(true);
-            rotate.setNode(ringview);
+            Obstacle cr = new CircleObstacle(1, colors, 50, 850, 60, -1);
+            Obstacle cr2 = new CircleObstacle(1, colors, 50, 850, 40, 1);
+            Obstacle cr3 = new CircleObstacle(1, colors, 50, 850, 85, 1);
 
-            //playing the transition
-            rotate.play();
+            CircleObstacle crt = (CircleObstacle) cr;
+            CircleObstacle crt2 = (CircleObstacle) cr3;
+            CircleObstacle crt3 = (CircleObstacle) cr2;
+            crt.getArc1().setStrokeWidth(15.0f);
+            crt.getArc2().setStrokeWidth(15.0f);
+            crt.getArc3().setStrokeWidth(15.0f);
+            crt.getArc4().setStrokeWidth(15.0f);
 
-            //Instantiating RotateTransition class
-            RotateTransition rotate2 = new RotateTransition();
-            rotate2.setAxis(Rotate.Z_AXIS);
-            rotate2.setByAngle(-360);
-            rotate2.setCycleCount(500);
-            rotate2.setDuration(Duration.millis(1000));
-            rotate2.setAutoReverse(true);
-            rotate2.setNode(ringview2);
-            rotate2.play();
+            crt2.getArc1().setStrokeWidth(20.0f);
+            crt2.getArc2().setStrokeWidth(20.0f);
+            crt2.getArc3().setStrokeWidth(20.0f);
+            crt2.getArc4().setStrokeWidth(20.0f);
+
+            AnimationTimer timer = new AnimationTimer()
+            {
+                @Override
+                public void handle(long l)
+                {
+                    cr.move(0, 0);
+                    cr2.move(0, 0);
+                    cr3.move(0, 0);
+                }
+            };
+
+            timer.start();
+            cr.display(root);
+            cr2.display(root);
+            cr3.display(root);
 
             //Creating graphic replay
             Image img = new Image(new FileInputStream("Rings2\\6.png"));
             ImageView view = new ImageView(img);
-            view.setFitHeight(25);
+            view.setFitHeight(30);
             view.setPreserveRatio(true);
 
             // create replay button
             Button button = new Button();
-            button.setTranslateX(65);
-            button.setTranslateY(25);
+            button.setLayoutY(1270); //850
+            button.setLayoutX(25);
             button.setStyle("-fx-background-color: #241E1E");
             //Setting the size of the button
-            button.setPrefSize(25, 25);
+            button.setPrefSize(30, 30);
             //Setting a graphic to the button
             button.setGraphic(view);
+
+            button.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent actionEvent)
+                {
+                    timer2.start();
+                    stage.close();
+                }
+            });
 
             //Creating graphic save and exit
             Image img2 = new Image(new FileInputStream("Pause\\ColorSwitchCopy (1).png"));
@@ -96,8 +130,8 @@ public class PausePage extends Application
 
             // create save and exit button
             Button button2 = new Button();
-            button2.setTranslateX(-75);
-            button2.setTranslateY(170);
+            button2.setLayoutX(-50);
+            button2.setLayoutY(280);       //1220
             button2.setStyle("-fx-background-color: #241E1E");
             //Setting the size of the button
             button2.setPrefSize(50, 50);
@@ -114,7 +148,29 @@ public class PausePage extends Application
                 @Override
                 public void handle(ActionEvent actionEvent)
                 {
-                    dialog.showAndWait();
+                    Optional<String> name = dialog.showAndWait();
+
+                    name.ifPresent(input -> {
+
+                        gameState.setName(name.get());
+
+                        try
+                        {
+                            serialize();
+                            stage.close();
+                            game.close();
+                            MainMenu mm = new MainMenu();
+                            mm.addState(gameState);
+                            mm.start(new Stage());
+                        }
+
+                        catch(Exception e)
+                        {
+                            System.out.println("Exception is caught in Serialize");
+                        }
+
+                    });
+
                 }
             });
 
@@ -126,8 +182,8 @@ public class PausePage extends Application
 
             // create quit button
             Button button3 = new Button();
-            button3.setTranslateX(-275);
-            button3.setTranslateY(225);
+            button3.setLayoutX(-50);
+            button3.setLayoutY(340);
             button3.setStyle("-fx-background-color: #241E1E");
             //Setting the size of the button
             button3.setPrefSize(50, 50);
@@ -142,6 +198,7 @@ public class PausePage extends Application
                     try
                     {
                         stage.close();
+                        game.close();
                         (new MainMenu()).start(new Stage());
                     }
 
@@ -152,17 +209,18 @@ public class PausePage extends Application
                 }
             });
 
-            // add the heading and buttons
-            HBox hbox = new HBox(ringview, ringview2, button, button2, button3);
+            root3.setTranslateY(200);
+            root2.getChildren().addAll(button);
+            root3.getChildren().addAll(button2, button3);
 
-            // set spacing
-            hbox.setSpacing(10);
-
-            // set alignment for the HBox
-            hbox.setAlignment(Pos.CENTER);
+            //root4.getChildren().add(button3);
+            pane.getChildren().addAll(root, root2, root3);
+            //pane.getChildren().add(root2);
+            //pane.getChildren().add(root3);
+            //pane.getChildren().add(root4);
 
             // create a scene
-            Scene scene = new Scene(hbox, 324, 576);
+            Scene scene = new Scene(pane, 324, 576);
 
             // create a input stream
             FileInputStream input = new FileInputStream("Pause\\PauseBG.png");
@@ -181,7 +239,7 @@ public class PausePage extends Application
             Background background = new Background(backgroundimage);
 
             // set background
-            hbox.setBackground(background);
+            pane.setBackground(background);
 
             // set the scene
             stage.setScene(scene);
@@ -191,6 +249,26 @@ public class PausePage extends Application
         catch (Exception e) {
 
             System.out.println(e.getMessage());
+        }
+    }
+
+    public void serialize() throws IOException {
+        ObjectOutputStream out = null;
+        try{
+            out = new ObjectOutputStream(new FileOutputStream("out.txt"));
+            out.writeObject(gameState);
+            System.out.println("Hello");
+            System.out.println(gameState);
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("IOException is caught");
+            ex.printStackTrace();
+        }
+
+        finally {
+            out.close();
         }
     }
 }

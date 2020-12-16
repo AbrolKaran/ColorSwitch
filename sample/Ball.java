@@ -4,8 +4,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Translate;
 import java.awt.Rectangle;
+import java.io.Serializable;
 
-public class Ball
+public class Ball implements Serializable
 {
     private float X;
     private float Y;

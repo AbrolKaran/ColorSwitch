@@ -38,8 +38,8 @@ public class SquareCircleObstacle extends Obstacle{
 
     SquareCircleObstacle(int d, ArrayList<String> c, float x, float y,float l,int dir){
         super(d,c,x,y,l,dir);
-        s1 = new SquareObstacle(d,c,x-(l+100)/2,y-(l+100)/2,l+90,dir);
-        c1 = new CircleObstacle(d,c,x,y,l,-1*dir);
+        s1 = new SquareObstacle(d,c,x-(l+100)/2,y-(l+100)/2,l+90,d*dir);
+        c1 = new CircleObstacle(d,c,x,y,l,-1*dir*d);
 
         myColors = new ArrayList<>();
         myColors.add("#CB6CE6");

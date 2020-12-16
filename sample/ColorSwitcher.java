@@ -2,6 +2,7 @@ package sample;
 
 import java.awt.geom.Point2D;
 import java.io.FileInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -11,7 +12,7 @@ import java.util.Random;
 import javafx.scene.image.*;
 import org.w3c.dom.css.Rect;
 
-public class ColorSwitcher
+public class ColorSwitcher implements Serializable
 {
     private ArrayList<String> myColors;
     private int state;

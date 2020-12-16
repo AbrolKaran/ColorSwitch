@@ -2,11 +2,17 @@ package sample;
 
 import java.io.*;
 import java.lang.reflect.Array;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.animation.RotateTransition;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import javafx.scene.transform.Rotate;
 import javafx.fxml.FXMLLoader;
@@ -32,12 +38,14 @@ import javafx.scene.paint.*;
 
 public class Main extends Application
 {
-    MainMenu menu = new MainMenu();
+    private static MainMenu menu = new MainMenu();
+    private boolean end = false;
 
     public static void main(String[] args)
     {
         launch(args);
         //Application.launch(PausePage.class, args);
+        //Application.launch(SavedGamesPage.class, args);
         //Application.launch(GameOverPage.class, args);
         //Application.launch(GamePlay.class, args);
     }
@@ -60,21 +68,6 @@ public class Main extends Application
 
             Group root = new Group();
 
-            //Create outer ring
-            Image outerRing = new Image(new FileInputStream("Rings1\\2.png"));
-            ImageView ringview = new ImageView(outerRing);
-            ringview.setFitHeight(270);
-            ringview.setPreserveRatio(true);
-            ringview.setTranslateX(105);
-            ringview.setTranslateY(55);
-
-            //Create inner ring
-            Image innerRing = new Image(new FileInputStream("Rings1\\3.png"));
-            ImageView ringview2 = new ImageView(innerRing);
-            ringview2.setFitHeight(125);
-            ringview2.setPreserveRatio(true);
-            ringview2.setTranslateX(-100);
-            ringview2.setTranslateY(55);
 
             Obstacle cr = new CircleObstacle(1, colors, 50, 230, 80, -1);
             Obstacle cr2 = new CircleObstacle(1, colors, 50, 230, 55, 1);
@@ -94,6 +87,11 @@ public class Main extends Application
 
             //root.setLayoutX(100);
             //root.setLayoutY(100);
+            //set music
+            String thePath = "Sound//ThemeMusic.mp3";
+            Media media = new Media(new File(thePath).toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+
 
             AnimationTimer timer = new AnimationTimer()
             {
@@ -103,6 +101,11 @@ public class Main extends Application
                     cr.move(0, 0);
                     cr2.move(0, 0);
                     cr3.move(0, 0);
+                    //mediaPlayer.play();
+                    if(end)
+                    {
+                        this.stop();
+                    }
                 }
             };
 
@@ -134,6 +137,8 @@ public class Main extends Application
                 {
                     try
                     {
+                        end = true;
+                        mediaPlayer.stop();
                         stage.close();
                         menu.start(new Stage());
                     }
@@ -144,43 +149,6 @@ public class Main extends Application
                     }
                 }
             });
-
-            //Instantiating RotateTransition class
-            RotateTransition rotate = new RotateTransition();
-
-            //Setting Axis of rotation
-            rotate.setAxis(Rotate.Z_AXIS);
-
-            // setting the angle of rotation
-            rotate.setByAngle(360);
-
-            //setting cycle count of the rotation
-            rotate.setCycleCount(500);
-
-            //Setting duration of the transition
-            rotate.setDuration(Duration.millis(1000));
-
-            //the transition will be auto reversed by setting this to true
-            rotate.setAutoReverse(true);
-
-            //setting Rectangle as the node onto which the transition will be applied
-            rotate.setNode(ringview);
-
-            //playing the transition
-            rotate.play();
-
-            //Instantiating RotateTransition class
-            RotateTransition rotate2 = new RotateTransition();
-            rotate2.setAxis(Rotate.Z_AXIS);
-            rotate2.setByAngle(-360);
-            rotate2.setCycleCount(500);
-            rotate2.setDuration(Duration.millis(1000));
-            rotate2.setAutoReverse(true);
-            rotate2.setNode(ringview2);
-            rotate2.play();
-
-            // add the heading and buttons
-
 
             // set spacing
             hbox.setSpacing(10);
@@ -193,9 +161,9 @@ public class Main extends Application
             root.getChildren().add(button);
             hbox.getChildren().addAll(root);
 
+
             // create a input stream
             FileInputStream input = new FileInputStream("IntroPage\\2.png");
-
             // create a image
             Image image = new Image(input);
 

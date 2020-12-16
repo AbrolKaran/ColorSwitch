@@ -14,12 +14,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 
 public class MainMenu extends Application
 {
-    private GamePlay currentGame = new GamePlay();
-    private SavedGamesPage savedGames = new SavedGamesPage();
-    private int HighScore;
+    private GamePlay currentGame = new GamePlay(1);
+    private static SavedGamesPage savedGames = new SavedGamesPage();
+    private static int HighScore;
+    private static ArrayList<GameState> savedStates = new ArrayList<>();
 
     @Override
     public void start(Stage stage) throws Exception
@@ -28,6 +30,7 @@ public class MainMenu extends Application
         {
             // set title for the stage
             stage.setTitle("Main Menu");
+            updateSavedGames();
 
             // create a label
             Label label = new Label("Name : ");
@@ -254,6 +257,16 @@ public class MainMenu extends Application
         {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static void addState(GameState gm)
+    {
+        savedStates.add(gm);
+    }
+
+    public void updateSavedGames()
+    {
+        savedGames.addList(savedStates);
     }
 
 }

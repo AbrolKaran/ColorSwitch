@@ -36,8 +36,8 @@ public class CircleFanObstacle extends Obstacle{
 
     CircleFanObstacle(int d, ArrayList<String> c, float x, float y, float l, int dir){
         super(d,c,x,y,l,dir);
-        f1 = new FanObstacle(d,c,x+20,y,l-10,dir);
-        c1 = new CircleObstacle(d,c,x,y,l+20,-1*dir);
+        f1 = new FanObstacle(d,c,x+20,y,l-10,d*dir);
+        c1 = new CircleObstacle(d,c,x,y,l+20,-1*dir*d);
         myColors = new ArrayList<String>();
         myColors.add("#FF5757");
         myColors.add("#FFDE59");

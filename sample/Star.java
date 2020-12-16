@@ -4,11 +4,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
 import java.awt.geom.Point2D;
 import java.io.FileInputStream;
+import java.io.Serializable;
 
-public class Star
+public class Star implements Serializable
 {
     private int points;
     private float X;
@@ -54,6 +54,15 @@ public class Star
             Y -= vel;
         }
     }
+
+    public float getY() {
+        return Y;
+    }
+
+    public float getX() {
+        return X;
+    }
+
 
     public boolean intersect(Ball ball)
     {

@@ -1,5 +1,6 @@
 package sample;
 import javafx.scene.Group;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
@@ -66,6 +67,11 @@ public class CircleObstacle extends Obstacle{
         r.getChildren().addAll(arc1,arc2,arc3,arc4);
     }
 
+    public void show(HBox hb)
+    {
+        hb.getChildren().addAll(arc1, arc2, arc3, arc4);
+    }
+
     public CircleObstacle(int d, ArrayList<String> c,float x, float y,float l, int dir){
 
         super(d,c,x,y,l,dir);
@@ -76,7 +82,7 @@ public class CircleObstacle extends Obstacle{
         myColors.add(colors.get(3));
         this.posY = y;
         this.length = l;
-        this.direction = dir;
+        this.direction = dir*d;
         arc1 = new Arc();
         arc1.setCenterX(posX);
         arc1.setCenterY(posY);

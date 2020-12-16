@@ -37,8 +37,8 @@ public class DoubleCircleObstacle extends Obstacle{
 
     DoubleCircleObstacle(int d, ArrayList<String> c, float x, float y,float l,int dir){
         super(d,c,x,y,l,dir);
-        c1 = new CircleObstacle(d,c,x,y,l+20,1*dir);
-        c2 = new CircleObstacle(d,c,x,y,l,-1*dir);
+        c1 = new CircleObstacle(d,c,x,y,l+20,d*dir);
+        c2 = new CircleObstacle(d,c,x,y,l,-1*dir*d);
         myColors = new ArrayList<String>();
         myColors.add("#FF5757");
         myColors.add("#FFDE59");

@@ -54,7 +54,7 @@ public class SquareObstacle extends Obstacle{
         myColors.add(colors.get(2));
         myColors.add(colors.get(3));
         this.length = l;
-        this.direction = dir;
+        this.direction = dir*d;
         r1 = new Rectangle();
         r1.setX(x+10);
         r1.setY(y);

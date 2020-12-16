@@ -2,9 +2,10 @@ package sample;
 
 import javafx.scene.Group;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Obstacle {
+public abstract class Obstacle implements Serializable {
     protected float speed;
     protected float length;
     protected float posX;
@@ -12,7 +13,6 @@ public abstract class Obstacle {
     protected ArrayList<String> colors;
     protected int difficulty;
     protected int direction;
-    protected int numColors;
     protected ArrayList<String> myColors;
     protected float Y;
 
@@ -22,7 +22,7 @@ public abstract class Obstacle {
         posY = y;
         Y = y;
         length = l;
-        direction = d;
+        direction = d*difficulty;
         this.difficulty = difficulty;
     }
 
@@ -58,6 +58,7 @@ public abstract class Obstacle {
 
     public abstract boolean offscreen(Ball ball);
 
-
-
+    public float getLength() {
+        return length;
+    }
 }

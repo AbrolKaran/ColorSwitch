@@ -9,11 +9,13 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-
 import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,8 +24,8 @@ import javafx.collections.ObservableList;
 
 public class SavedGamesPage extends Application
 {
-    private ArrayList<GamePlay> listGames;
-    private int numGames;
+    private static ArrayList<GameState> listGames = new ArrayList<>();
+    private static ArrayList<String> names = new ArrayList<>();
     private int HighScore;
 
     @Override
@@ -107,8 +109,32 @@ public class SavedGamesPage extends Application
                 }
             });
 
+            Button btn = new Button("Load Selected Game");
+            btn.setStyle("-fx-border-width: 1px; -fx-border-color: #FFDE59; -fx-background-color: #241E1E; -fx-font-size: 14px; -fx-font-family: 'Verdana'");
+            btn.setTextFill(Color.WHITE);
+            btn.setLayoutX(0);
+            btn.setTranslateY(-50);
+
+            btn.setOnAction(event -> {
+                int idx = displayList().getSelectionModel().getSelectedIndex();
+
+                //int idx = (int)(selectedIndices.get(0));
+
+                try
+                {
+                    deserialize(listGames.get(idx+1));
+
+                }
+
+                catch(Exception e)
+                {
+                    System.out.println("Exception in deserialization");
+                    e.printStackTrace();
+                }
+            });
+
             // add the heading and buttons
-            VBox hbox = new VBox(button2, button3, listView);
+            VBox hbox = new VBox(button2, button3, listView, btn);
 
             // set spacing
             hbox.setSpacing(10);
@@ -151,13 +177,58 @@ public class SavedGamesPage extends Application
 
     public ListView<String> displayList()
     {
-        ObservableList<String> list = FXCollections.observableArrayList("Game1", "Game2", "Game3", "Game4", "Game5", "Game6", "Game7");
-        ListView<String> listView = new ListView<String>(list);
+        ArrayList<String> names = new ArrayList<>();
+        for(GameState gs : listGames)
+        {
+            names.add(gs.getName());
+        }
+
+        //ObservableList<String> list = FXCollections.observableArrayList("Game1", "Game2", "Game3", "Game4", "Game5", "Game6", "Game7");
+        ObservableList<String> gameNames = FXCollections.observableArrayList(names);
+
+        ListView<String> listView = new ListView<String>(gameNames);
         listView.setMaxSize(200, 160);
         listView.setTranslateX(0);
         listView.setTranslateY(-50);
         listView.setStyle("-fx-border-width: 0px; -fx-control-inner-background: #241E1E; -fx-font-size: 15px; -fx-font-family: 'Verdana'");
 
         return listView;
+    }
+
+    public void addList(ArrayList<GameState> list)
+    {
+        this.listGames.addAll(list);
+
+    }
+
+    public void deserialize(GameState gameState) throws IOException, ClassNotFoundException{
+
+        ObjectInputStream in = null;
+        try{
+            in = new ObjectInputStream(new FileInputStream("out.txt"));
+            gameState = (GameState) in.readObject();
+            new GamePlay(1).reLoad(gameState);
+            System.out.println(gameState);
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("IOException is caught");
+        }
+
+        catch(ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException is caught");
+        }
+
+        catch (Exception e)
+        {
+            System.out.println("Reload exception");
+            e.printStackTrace();
+        }
+
+        finally {
+            in.close();
+        }
     }
 }
