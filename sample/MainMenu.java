@@ -41,6 +41,7 @@ public class MainMenu extends Application
         {
             this.deserialize();
             HighScore = savedGames.getHighScore();
+            savedGames.setMenu(this);
         }
 
         catch(Exception e)

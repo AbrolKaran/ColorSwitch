@@ -76,28 +76,28 @@ public class FanObstacle extends Obstacle{
         r1.setY(y-5);
         r1.setWidth(length);
         r1.setHeight(10);
-        r1.setFill(Color.web(colors.get(0)));
+        r1.setFill(Color.web(colors.get(1)));
 
         r2 = new Rectangle();
         r2.setX(x-5);
         r2.setY(y-length - 5);
         r2.setWidth(10);
         r2.setHeight(length);
-        r2.setFill(Color.web(colors.get(1)));
+        r2.setFill(Color.web(colors.get(2)));
 
         r3 = new Rectangle();
         r3.setX(posX+5);
         r3.setY(posY-5);
         r3.setWidth(length);
         r3.setHeight(10);
-        r3.setFill(Color.web(colors.get(2)));
+        r3.setFill(Color.web(colors.get(3)));
 
         r4 = new Rectangle();
         r4.setX(posX-5);
         r4.setY(posY+5);
         r4.setWidth(10);
         r4.setHeight(length);
-        r4.setFill(Color.web(colors.get(3)));
+        r4.setFill(Color.web(colors.get(0)));
 
         rect = new ArrayList<>();
         rect.add(r1);
@@ -115,10 +115,10 @@ public class FanObstacle extends Obstacle{
         Shape shape3 = Shape.intersect(ball.display(), r3);
         Shape shape4 = Shape.intersect(ball.display(), r4);
 
-        boolean cond1 = !shape1.getBoundsInLocal().isEmpty() && !colors.get(0).equals(ball.getColor());
-        boolean cond2 = !shape2.getBoundsInLocal().isEmpty() && !colors.get(1).equals(ball.getColor());
-        boolean cond3 = !shape3.getBoundsInLocal().isEmpty() && !colors.get(2).equals(ball.getColor());
-        boolean cond4 = !shape4.getBoundsInLocal().isEmpty() && !colors.get(3).equals(ball.getColor());
+        boolean cond1 = !shape1.getBoundsInLocal().isEmpty() && !colors.get(1).equals(ball.getColor());
+        boolean cond2 = !shape2.getBoundsInLocal().isEmpty() && !colors.get(2).equals(ball.getColor());
+        boolean cond3 = !shape3.getBoundsInLocal().isEmpty() && !colors.get(3).equals(ball.getColor());
+        boolean cond4 = !shape4.getBoundsInLocal().isEmpty() && !colors.get(0).equals(ball.getColor());
 
         return cond1 || cond2 || cond3 || cond4;
         //return collides(ball, r1) || collides(ball, r2) || collides(ball, r3) || collides(ball, r4);

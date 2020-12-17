@@ -178,7 +178,7 @@ public class SavedGamesPage extends Application implements Serializable
                     mediaPlayer.play();
 
                     GamePlay nGame = new GamePlay(1,menu);
-
+                    menu.setCurrentGame(nGame);
                     nGame.reLoad(listGames.get(select));
                 }
 

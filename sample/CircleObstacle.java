@@ -146,9 +146,9 @@ public class CircleObstacle extends Obstacle{
         Shape shape4 = Shape.intersect(ball.display(), arc4);
 
         boolean cond1 = !shape1.getBoundsInLocal().isEmpty() && !colors.get(0).equals(ball.getColor());
-        boolean cond2 = !shape2.getBoundsInLocal().isEmpty() && !colors.get(1).equals(ball.getColor());
-        boolean cond3 = !shape3.getBoundsInLocal().isEmpty() && !colors.get(2).equals(ball.getColor());
-        boolean cond4 = !shape4.getBoundsInLocal().isEmpty() && !colors.get(3).equals(ball.getColor());
+        boolean cond2 = !shape2.getBoundsInLocal().isEmpty() && !colors.get(3).equals(ball.getColor());
+        boolean cond3 = !shape3.getBoundsInLocal().isEmpty() && !colors.get(1).equals(ball.getColor());
+        boolean cond4 = !shape4.getBoundsInLocal().isEmpty() && !colors.get(2).equals(ball.getColor());
 
         return cond1 || cond2 || cond3 || cond4;
     }

@@ -45,6 +45,7 @@ public class GamePlay extends Application
     private int noDetect;
     private int cnt1;
     private int cnt2;
+    private Random rand = new Random();
 
 
     public GamePlay(int ID, MainMenu mm)
@@ -121,14 +122,14 @@ public class GamePlay extends Application
 
         colorSwitchers.add(CS2);
 
-        this.ball = new Ball(posX,600, -6.5f, 7, colors.get(0));
+        int c = rand.nextInt(4);
+        this.ball = new Ball(posX,600, -6.5f, 7, colors.get(c));
 
         float posY = 160;
         float posY2 = 420;
 
         obstacles.add(new CircleObstacle(1, colors, posX, posY2, 75, 1));
         obstacles.add(new FanObstacle(1, colors, posX+30, posY, 65, 1));
-
 
         EventHandler<KeyEvent> eventEventHandler = new EventHandler<KeyEvent>() {
             @Override
@@ -157,23 +158,7 @@ public class GamePlay extends Application
 
         // create a scene
         Scene scene = new Scene(root, width, length, Color.BLACK);
-        scene.setOnKeyPressed(e -> {
-            if(e.getCode().equals(KeyCode.A));
-            {
-                if(var == 0)
-                {
-                    var =1;
-                }
 
-                flag=1;
-
-                String thePath = "Sound//jump.wav";
-                Media media = new Media(new File(thePath).toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.setVolume(menu.getVol());
-                mediaPlayer.play();
-            }
-        });
 
 
         AnimationTimer timer = new AnimationTimer()
@@ -321,6 +306,39 @@ public class GamePlay extends Application
             }
         });
 
+        scene.setOnKeyPressed(e -> {
+            if(e.getCode().equals(KeyCode.S));
+            {
+                if(var == 0)
+                {
+                    var =1;
+                }
+
+                flag=1;
+
+                String thePath = "Sound//jump.wav";
+                Media media = new Media(new File(thePath).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setVolume(menu.getVol());
+                mediaPlayer.play();
+            }
+            if(e.getCode().equals(KeyCode.P)){
+                try
+                {
+                    timer.stop();
+                    var = 0;
+                    GameState gm1 = new GameState(id, score, ball.getX(), ball.getY(), ball.getColor(), stars.get(0).getX(), stars.get(0).getY(), obstacles.get(0).getPosX(), obstacles.get(0).getY(), colorSwitchers.get(0).getX(), colorSwitchers.get(0).getY(), difficultyLevel, flag, obCount-2);
+                    (new PausePage(timer, gm1, stage, menu)).start(new Stage());
+                }
+
+                catch (Exception e1)
+                {
+                    System.out.println(e1.getMessage());
+                }
+
+            }
+
+        });
         // set the scene
         stage.setScene(scene);
         stage.show();
@@ -345,7 +363,7 @@ public class GamePlay extends Application
         String thePath = "Sound//colorswitch.wav";
         Media media = new Media(new File(thePath).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setVolume(1.5);
+        mediaPlayer.setVolume(menu.getVol());
         mediaPlayer.play();
 
         if(cs.getState() == 0)
@@ -389,6 +407,7 @@ public class GamePlay extends Application
                 try
                 {
                     timer.stop();
+                    var = 0;
                     GameState gm = new GameState(id, score, ball.getX(), ball.getY(), ball.getColor(), stars.get(0).getX(), stars.get(0).getY(), obstacles.get(0).getPosX(), obstacles.get(0).getY(), colorSwitchers.get(0).getX(), colorSwitchers.get(0).getY(), difficultyLevel, flag, obCount-2);
                     (new PausePage(timer, gm, st, menu)).start(new Stage());
                 }
@@ -757,23 +776,7 @@ public class GamePlay extends Application
 
         // create a scene
         Scene scene = new Scene(root, width, length, Color.BLACK);
-        scene.setOnKeyPressed(e -> {
-            if(e.getCode().equals(KeyCode.A));
-            {
-                if(var == 0)
-                {
-                    var =1;
-                }
 
-                flag=1;
-
-                String thePath = "Sound//jump.wav";
-                Media media = new Media(new File(thePath).toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.setVolume(menu.getVol());
-                mediaPlayer.play();
-            }
-        });
 
 
         AnimationTimer timer = new AnimationTimer()
@@ -920,7 +923,39 @@ public class GamePlay extends Application
                 }
             }
         });
+        scene.setOnKeyPressed(e -> {
+            if(e.getCode().equals(KeyCode.S));
+            {
+                if(var == 0)
+                {
+                    var =1;
+                }
 
+                flag=1;
+
+                String thePath = "Sound//jump.wav";
+                Media media = new Media(new File(thePath).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setVolume(menu.getVol());
+                mediaPlayer.play();
+            }
+            if(e.getCode().equals(KeyCode.P)){
+                try
+                {
+                    timer.stop();
+                    var = 0;
+                    GameState gm1 = new GameState(id, score, ball.getX(), ball.getY(), ball.getColor(), stars.get(0).getX(), stars.get(0).getY(), obstacles.get(0).getPosX(), obstacles.get(0).getY(), colorSwitchers.get(0).getX(), colorSwitchers.get(0).getY(), difficultyLevel, flag, obCount-2);
+                    (new PausePage(timer, gm1, stage, menu)).start(new Stage());
+                }
+
+                catch (Exception e1)
+                {
+                    System.out.println(e1.getMessage());
+                }
+
+            }
+
+        });
         // set the scene
         stage.setScene(scene);
         stage.show();
