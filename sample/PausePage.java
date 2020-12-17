@@ -30,15 +30,17 @@ import javafx.util.Duration;
 
 public class PausePage extends Application
 {
-    AnimationTimer timer2;
-    GameState gameState;
-    Stage game;
+    private AnimationTimer timer2;
+    private GameState gameState;
+    private Stage game;
+    private MainMenu menu;
 
-    public PausePage(AnimationTimer timer, GameState gm, Stage g)
+    public PausePage(AnimationTimer timer, GameState gm, Stage g,MainMenu mm)
     {
         this.timer2 = timer;
         this.gameState = gm;
         this.game = g;
+        this.menu = mm;
     }
     @Override
     public void start(Stage stage) throws Exception
@@ -153,14 +155,15 @@ public class PausePage extends Application
                     name.ifPresent(input -> {
 
                         gameState.setName(name.get());
+                        menu.getSavedGames().getNames().add(name.get());
+                        menu.getSavedGames().getListGames().put(name.get(),gameState);
 
                         try
                         {
-                            serialize();
+                            menu.serialize();
                             stage.close();
                             game.close();
                             MainMenu mm = new MainMenu();
-                            mm.addState(gameState);
                             mm.start(new Stage());
                         }
 
@@ -252,23 +255,5 @@ public class PausePage extends Application
         }
     }
 
-    public void serialize() throws IOException {
-        ObjectOutputStream out = null;
-        try{
-            out = new ObjectOutputStream(new FileOutputStream("out.txt"));
-            out.writeObject(gameState);
-            System.out.println("Hello");
-            System.out.println(gameState);
-        }
 
-        catch(IOException ex)
-        {
-            System.out.println("IOException is caught");
-            ex.printStackTrace();
-        }
-
-        finally {
-            out.close();
-        }
-    }
 }

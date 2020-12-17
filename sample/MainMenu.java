@@ -13,15 +13,112 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import java.io.FileInputStream;
+
+import java.io.*;
 import java.util.ArrayList;
 
 public class MainMenu extends Application
 {
-    private GamePlay currentGame = new GamePlay(1);
-    private static SavedGamesPage savedGames = new SavedGamesPage();
-    private static int HighScore;
-    private static ArrayList<GameState> savedStates = new ArrayList<>();
+    private GamePlay currentGame;
+    private SavedGamesPage savedGames;
+    private int HighScore;
+    private ArrayList<GameState> savedStates;
+    private MainMenu menu;
+
+    public MainMenu(){
+        currentGame = new GamePlay(1,this);
+        savedGames = new SavedGamesPage(this);
+        savedStates = new ArrayList<>();
+        menu = this;
+        try
+        {
+            this.deserialize();
+        }
+
+        catch(Exception e)
+        {
+            System.out.println("Exception in deserialization");
+            savedGames = new SavedGamesPage(this);
+        }
+
+    }
+
+    public GamePlay getCurrentGame() {
+        return currentGame;
+    }
+
+    public void setCurrentGame(GamePlay currentGame) {
+        this.currentGame = currentGame;
+    }
+
+    public SavedGamesPage getSavedGames() {
+        return savedGames;
+    }
+
+    public void setSavedGames(SavedGamesPage savedGames) {
+        this.savedGames = savedGames;
+    }
+
+    public int getHighScore() {
+        return HighScore;
+    }
+
+    public void setHighScore(int highScore) {
+        HighScore = highScore;
+    }
+
+    public ArrayList<GameState> getSavedStates() {
+        return savedStates;
+    }
+
+    public void setSavedStates(ArrayList<GameState> savedStates) {
+        this.savedStates = savedStates;
+    }
+
+    public MainMenu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(MainMenu menu) {
+        this.menu = menu;
+    }
+
+    public void serialize() throws IOException {
+        ObjectOutputStream out = null;
+        try{
+            out = new ObjectOutputStream(new FileOutputStream("out.txt"));
+            out.writeObject(savedGames);
+            System.out.println("Hello");
+            System.out.println(savedGames);
+        }
+        catch(IOException ex)
+        {
+            System.out.println("IOException is caught");
+            ex.printStackTrace();
+        }
+
+        finally {
+            out.close();
+        }
+    }
+
+
+    public void deserialize() throws IOException, ClassNotFoundException{
+
+        ObjectInputStream in = null;
+        try{
+            in = new ObjectInputStream(new FileInputStream("out.txt"));
+            savedGames = (SavedGamesPage) in.readObject();
+        }
+
+        catch(IOException ex)
+        {
+            System.out.println("IOException is caught");
+        }
+        finally {
+            in.close();
+        }
+    }
 
     @Override
     public void start(Stage stage) throws Exception
@@ -30,7 +127,6 @@ public class MainMenu extends Application
         {
             // set title for the stage
             stage.setTitle("Main Menu");
-            updateSavedGames();
 
             // create a label
             Label label = new Label("Name : ");
@@ -257,16 +353,6 @@ public class MainMenu extends Application
         {
             System.out.println(e.getMessage());
         }
-    }
-
-    public static void addState(GameState gm)
-    {
-        savedStates.add(gm);
-    }
-
-    public void updateSavedGames()
-    {
-        savedGames.addList(savedStates);
     }
 
 }

@@ -14,19 +14,61 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableList;
 
 
-public class SavedGamesPage extends Application
+public class SavedGamesPage extends Application implements Serializable
 {
-    private static ArrayList<GameState> listGames = new ArrayList<>();
-    private static ArrayList<String> names = new ArrayList<>();
+    private HashMap<String,GameState> listGames;
+    private ArrayList<String> names;
     private int HighScore;
+    private transient MainMenu menu;
+
+    public SavedGamesPage(MainMenu mm){
+        listGames = new HashMap<>();
+        names = new ArrayList<>();
+        menu = mm;
+    }
+
+    public HashMap<String, GameState> getListGames() {
+        return listGames;
+    }
+
+    public void setListGames(HashMap<String,GameState> listGames) {
+        this.listGames = listGames;
+    }
+
+    public ArrayList<String> getNames() {
+        return names;
+    }
+
+    public void setNames(ArrayList<String> names) {
+        this.names = names;
+    }
+
+    public int getHighScore() {
+        return HighScore;
+    }
+
+    public void setHighScore(int highScore) {
+        HighScore = highScore;
+    }
+
+    public MainMenu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(MainMenu menu) {
+        this.menu = menu;
+    }
 
     @Override
     public void start(Stage stage) throws Exception
@@ -116,14 +158,16 @@ public class SavedGamesPage extends Application
             btn.setTranslateY(-50);
 
             btn.setOnAction(event -> {
-                int idx = displayList().getSelectionModel().getSelectedIndex();
+                String select = listView.getSelectionModel().getSelectedItem();
+
 
                 //int idx = (int)(selectedIndices.get(0));
 
                 try
                 {
-                    deserialize(listGames.get(idx+1));
 
+                    GamePlay nGame = new GamePlay(1,menu);
+                    nGame.reLoad(listGames.get(select));
                 }
 
                 catch(Exception e)
@@ -177,11 +221,11 @@ public class SavedGamesPage extends Application
 
     public ListView<String> displayList()
     {
-        ArrayList<String> names = new ArrayList<>();
+        /*
         for(GameState gs : listGames)
         {
             names.add(gs.getName());
-        }
+        }*/
 
         //ObservableList<String> list = FXCollections.observableArrayList("Game1", "Game2", "Game3", "Game4", "Game5", "Game6", "Game7");
         ObservableList<String> gameNames = FXCollections.observableArrayList(names);
@@ -195,40 +239,6 @@ public class SavedGamesPage extends Application
         return listView;
     }
 
-    public void addList(ArrayList<GameState> list)
-    {
-        this.listGames.addAll(list);
 
-    }
 
-    public void deserialize(GameState gameState) throws IOException, ClassNotFoundException{
-
-        ObjectInputStream in = null;
-        try{
-            in = new ObjectInputStream(new FileInputStream("out.txt"));
-            gameState = (GameState) in.readObject();
-            new GamePlay(1).reLoad(gameState);
-            System.out.println(gameState);
-        }
-
-        catch(IOException ex)
-        {
-            System.out.println("IOException is caught");
-        }
-
-        catch(ClassNotFoundException ex)
-        {
-            System.out.println("ClassNotFoundException is caught");
-        }
-
-        catch (Exception e)
-        {
-            System.out.println("Reload exception");
-            e.printStackTrace();
-        }
-
-        finally {
-            in.close();
-        }
-    }
 }

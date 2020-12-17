@@ -60,10 +60,12 @@ public class GamePlay extends Application
     private int flag = 0;
     private int obCount;
     private ArrayList<SmallBall> smallBalls;
+    private MainMenu menu;
     private int var;
 
 
-    public GamePlay(int ID)
+
+    public GamePlay(int ID,MainMenu mm)
     {
         this.id = ID;
         this.score = 0;
@@ -74,6 +76,7 @@ public class GamePlay extends Application
         this.difficultyLevel = 1;
         this.obCount = 2;
         this.var = 0;
+        this.menu = mm;
 
         this.colors = new ArrayList<>();
         colors.add("#38B6FF");
@@ -337,7 +340,7 @@ public class GamePlay extends Application
                 {
                     timer.stop();
                     GameState gm = new GameState(id, score, ball.getX(), ball.getY(), ball.getColor(), stars.get(0).getX(), stars.get(0).getY(), obstacles.get(0).getPosX(), obstacles.get(0).getY(), colorSwitchers.get(0).getX(), colorSwitchers.get(0).getY(), difficultyLevel, flag, obCount-2);
-                    (new PausePage(timer, gm, st)).start(new Stage());
+                    (new PausePage(timer, gm, st,menu)).start(new Stage());
                 }
 
                 catch (Exception e)
