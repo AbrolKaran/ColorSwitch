@@ -124,31 +124,6 @@ public class FanObstacle extends Obstacle{
         //return collides(ball, r1) || collides(ball, r2) || collides(ball, r3) || collides(ball, r4);
     }
 
-    public boolean collides(Ball c1, Rectangle r1)
-    {
-        double closestX = this.clamp(c1.getX(), r1.getLayoutX(), r1.getLayoutX() + r1.getWidth());
-        double closestY = this.clamp(c1.getY(), r1.getLayoutY() - r1.getHeight(), r1.getLayoutY());
-
-        double distanceX = c1.getX() - closestX;
-        double distanceY = c1.getY() - closestY;
-
-        return Math.pow(distanceX, 2) + Math.pow(distanceY, 2) < Math.pow(c1.display().getRadius(), 2);
-    }
-
-    public double clamp(double value, double min, double max)
-    {
-        double x = value;
-        if (x < min)
-        {
-            x = min;
-        }
-        else if (x > max)
-        {
-            x = max;
-        }
-        return x;
-    }
-
     @Override
     public boolean offscreen(Ball ball)
     {

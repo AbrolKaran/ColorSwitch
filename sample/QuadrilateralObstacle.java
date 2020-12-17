@@ -6,9 +6,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Rotate;
 import javafx.scene.shape.Shape;
-import sample.Obstacle;
-
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class QuadrilateralObstacle extends Obstacle {
@@ -118,45 +115,6 @@ public class QuadrilateralObstacle extends Obstacle {
         return cond1 || cond2 || cond3 || cond4;
     }
 
-    public boolean collides(Ball c1, Line line)
-    {
-        double closestX = this.clamp(c1.getX(), line.getLayoutX(), line.getLayoutX() + length(line));
-        double closestY = this.clamp(c1.getY(), line.getLayoutY() - line.getStrokeWidth(), line.getLayoutY());
-
-        double distanceX = c1.getX() - closestX;
-        double distanceY = c1.getY() - closestY;
-
-        return Math.pow(distanceX, 2) + Math.pow(distanceY, 2) < Math.pow(c1.display().getRadius(), 2);
-    }
-
-    public double midX(Line line)
-    {
-        return (line.getStartX() + line.getEndX())/2;
-    }
-
-    public double midY(Line line)
-    {
-        return (line.getStartY() + line.getEndY())/2;
-    }
-
-    public double length(Line line)
-    {
-        return Point2D.distance(line.getStartX(), line.getStartY(), line.getEndX(), line.getEndY());
-    }
-
-    public double clamp(double value, double min, double max)
-    {
-        double x = value;
-        if (x < min)
-        {
-            x = min;
-        }
-        else if (x > max)
-        {
-            x = max;
-        }
-        return x;
-    }
 
     @Override
     public boolean offscreen(Ball ball)

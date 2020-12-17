@@ -100,45 +100,6 @@ public class TriangleObstacle extends Obstacle{
         return cond1 || cond2 || cond3;
     }
 
-    public boolean collides(Ball c1, Line line)
-    {
-        double closestX = this.clamp(c1.display().getLayoutX(), line.getLayoutX(), line.getLayoutX() + length(line));
-        double closestY = this.clamp(c1.display().getLayoutY(), line.getLayoutY() - line.getStrokeWidth(), line.getLayoutY());
-
-        double distanceX = c1.display().getLayoutX() - closestX;
-        double distanceY = c1.display().getLayoutY() - closestY;
-
-        return Math.pow(distanceX, 2) + Math.pow(distanceY, 2) < Math.pow(c1.display().getRadius(), 2);
-    }
-
-    public double midX(Line line)
-    {
-        return (line.getStartX() + line.getEndX())/2;
-    }
-
-    public double midY(Line line)
-    {
-        return (line.getStartY() + line.getEndY())/2;
-    }
-
-    public double length(Line line)
-    {
-        return Point2D.distance(line.getStartX(), line.getStartY(), line.getEndX(), line.getEndY());
-    }
-
-    public double clamp(double value, double min, double max)
-    {
-        double x = value;
-        if (x < min)
-        {
-            x = min;
-        }
-        else if (x > max)
-        {
-            x = max;
-        }
-        return x;
-    }
 
     @Override
     public boolean offscreen(Ball ball)

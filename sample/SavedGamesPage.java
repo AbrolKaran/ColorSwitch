@@ -9,20 +9,16 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.lang.reflect.Array;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableList;
+
 
 
 public class SavedGamesPage extends Application implements Serializable
@@ -36,6 +32,7 @@ public class SavedGamesPage extends Application implements Serializable
         listGames = new HashMap<>();
         names = new ArrayList<>();
         menu = mm;
+        HighScore = 0;
     }
 
     public HashMap<String, GameState> getListGames() {
@@ -75,11 +72,13 @@ public class SavedGamesPage extends Application implements Serializable
     {
         try
         {
+            System.out.println("saved games start");
             // set title for the stage
             stage.setTitle("Saved Games");
 
             //list View for games
             ListView<String> listView = this.displayList();
+            System.out.println("After display list");
 
             //Creating graphic home
             Image img2 = new Image(new FileInputStream("GameOver\\6.png"));
@@ -115,16 +114,21 @@ public class SavedGamesPage extends Application implements Serializable
                 }
             });
 
+            System.out.println("After home btn");
+
+
             //Creating a dialog for high score
             Dialog<String> dialog2 = new Dialog<String>();
             //Setting the title
             dialog2.setTitle("High Score");
             ButtonType type3 = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
             //Setting the content of the dialog
-            dialog2.setHeaderText("The High Score is 20");
+            dialog2.setHeaderText("The High Score is " + getHighScore());
             dialog2.setHeight(35);
             //Adding buttons to the dialog pane
             dialog2.getDialogPane().getButtonTypes().addAll(type3);
+
+            System.out.println("after set high score");
 
             //Creating graphic high score
             Image img3 = new Image(new FileInputStream("IntroPage\\5.png"));
@@ -142,6 +146,8 @@ public class SavedGamesPage extends Application implements Serializable
             //Setting a graphic to the button
             button3.setGraphic(view3);
 
+            System.out.println("before btn event");
+
             button3.setOnAction(new EventHandler<ActionEvent>()
             {
                 @Override
@@ -151,6 +157,8 @@ public class SavedGamesPage extends Application implements Serializable
                 }
             });
 
+            System.out.println("After high score btn");
+
             Button btn = new Button("Load Selected Game");
             btn.setStyle("-fx-border-width: 1px; -fx-border-color: #FFDE59; -fx-background-color: #241E1E; -fx-font-size: 14px; -fx-font-family: 'Verdana'");
             btn.setTextFill(Color.WHITE);
@@ -158,15 +166,19 @@ public class SavedGamesPage extends Application implements Serializable
             btn.setTranslateY(-50);
 
             btn.setOnAction(event -> {
+
                 String select = listView.getSelectionModel().getSelectedItem();
-
-
-                //int idx = (int)(selectedIndices.get(0));
 
                 try
                 {
+                    String thePath = "Sound//button.wav";
+                    Media media = new Media(new File(thePath).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                    mediaPlayer.setVolume(1);
+                    mediaPlayer.play();
 
                     GamePlay nGame = new GamePlay(1,menu);
+
                     nGame.reLoad(listGames.get(select));
                 }
 
@@ -176,6 +188,8 @@ public class SavedGamesPage extends Application implements Serializable
                     e.printStackTrace();
                 }
             });
+
+            System.out.println("After load game btn");
 
             // add the heading and buttons
             VBox hbox = new VBox(button2, button3, listView, btn);
@@ -211,6 +225,7 @@ public class SavedGamesPage extends Application implements Serializable
             // set the scene
             stage.setScene(scene);
             stage.show();
+            System.out.println("saved games end");
         }
 
         catch (Exception e) {
@@ -221,13 +236,14 @@ public class SavedGamesPage extends Application implements Serializable
 
     public ListView<String> displayList()
     {
-        /*
+        /*ArrayList<String> names = new ArrayList<>();
         for(GameState gs : listGames)
         {
             names.add(gs.getName());
         }*/
 
         //ObservableList<String> list = FXCollections.observableArrayList("Game1", "Game2", "Game3", "Game4", "Game5", "Game6", "Game7");
+        System.out.println("display list");
         ObservableList<String> gameNames = FXCollections.observableArrayList(names);
 
         ListView<String> listView = new ListView<String>(gameNames);
@@ -238,7 +254,4 @@ public class SavedGamesPage extends Application implements Serializable
 
         return listView;
     }
-
-
-
 }

@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -12,27 +13,34 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class MainMenu extends Application
 {
     private GamePlay currentGame;
     private SavedGamesPage savedGames;
     private int HighScore;
-    private ArrayList<GameState> savedStates;
+    private ArrayList<GameState> savedStates = new ArrayList<>();
     private MainMenu menu;
+    private int vol;
 
     public MainMenu(){
         currentGame = new GamePlay(1,this);
         savedGames = new SavedGamesPage(this);
         savedStates = new ArrayList<>();
         menu = this;
+        HighScore = 0;
+        this.vol = 1;
         try
         {
             this.deserialize();
+            HighScore = savedGames.getHighScore();
         }
 
         catch(Exception e)
@@ -83,6 +91,10 @@ public class MainMenu extends Application
         this.menu = menu;
     }
 
+    public int getVol() {
+        return vol;
+    }
+
     public void serialize() throws IOException {
         ObjectOutputStream out = null;
         try{
@@ -120,6 +132,7 @@ public class MainMenu extends Application
         }
     }
 
+
     @Override
     public void start(Stage stage) throws Exception
     {
@@ -127,6 +140,7 @@ public class MainMenu extends Application
         {
             // set title for the stage
             stage.setTitle("Main Menu");
+            //updateSavedGames();
 
             // create a label
             Label label = new Label("Name : ");
@@ -161,6 +175,12 @@ public class MainMenu extends Application
                 {
                     try
                     {
+                        String thePath = "Sound//button.wav";
+                        Media media = new Media(new File(thePath).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(media);
+                        mediaPlayer.setVolume(1);
+                        mediaPlayer.play();
+
                         stage.close();
                         currentGame.start(new Stage());
                     }
@@ -196,7 +216,14 @@ public class MainMenu extends Application
                 {
                     try
                     {
+                        String thePath = "Sound//button.wav";
+                        Media media = new Media(new File(thePath).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(media);
+                        mediaPlayer.setVolume(1);
+                        mediaPlayer.play();
+
                         stage.close();
+                        System.out.println("savedGames");
                         savedGames.start(new Stage());
                     }
 
@@ -228,6 +255,12 @@ public class MainMenu extends Application
                 @Override
                 public void handle(ActionEvent actionEvent)
                 {
+                    String thePath = "Sound//button.wav";
+                    Media media = new Media(new File(thePath).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                    mediaPlayer.setVolume(1);
+                    mediaPlayer.play();
+
                     try
                     {
                         stage.close();
@@ -241,11 +274,11 @@ public class MainMenu extends Application
             });
 
             //Creating a dialog
-            Dialog<String> dialog = new Dialog<String>();
+            Dialog<ButtonType> dialog = new Dialog<ButtonType>();
             //Setting the title
             dialog.setTitle("Music Settings");
             ButtonType type = new ButtonType("ON", ButtonData.OK_DONE);
-            ButtonType type2 = new ButtonType("OFF", ButtonData.OK_DONE);
+            ButtonType type2 = new ButtonType("OFF", ButtonData.NO);
             //Setting the content of the dialog
             dialog.setHeaderText("Turn Music On/Off");
             //dialog.setWidth(500);
@@ -273,7 +306,19 @@ public class MainMenu extends Application
                 @Override
                 public void handle(ActionEvent actionEvent)
                 {
-                    dialog.showAndWait();
+
+                    Optional<ButtonType> result = dialog.showAndWait();
+
+                    if (result.get() == type){
+                        // ... user chose OK
+                        vol = 1;
+                    }
+
+                    else {
+                        // ... user chose CANCEL or closed the dialog
+                        System.out.println("else");
+                        vol = 0;
+                    }
                 }
             });
 
@@ -283,7 +328,7 @@ public class MainMenu extends Application
             dialog2.setTitle("High Score");
             ButtonType type3 = new ButtonType("OK", ButtonData.OK_DONE);
             //Setting the content of the dialog
-            dialog2.setHeaderText("The High Score is 20");
+            dialog2.setHeaderText("The High Score is " + getHighScore());
             dialog2.setHeight(35);
             //Adding buttons to the dialog pane
             dialog2.getDialogPane().getButtonTypes().addAll(type3);
@@ -354,5 +399,14 @@ public class MainMenu extends Application
             System.out.println(e.getMessage());
         }
     }
+    /*public static void addState(GameState gm)
+    {
+        savedStates.add(gm);
+    }
+
+    public void updateSavedGames()
+    {
+        savedGames.addList(savedStates);
+    }*/
 
 }

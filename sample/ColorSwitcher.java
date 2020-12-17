@@ -22,6 +22,7 @@ public class ColorSwitcher implements Serializable
     private Image img;
     private ImageView cs;
     private static Random rand = new Random();
+    private int collected;
 
     public ColorSwitcher(ArrayList<String> colors, int _radius, float _X, float _Y)
     {
@@ -30,6 +31,7 @@ public class ColorSwitcher implements Serializable
         this.X = _X;
         this.Y = _Y;
         this.radius = _radius;
+        this.collected = 0;
 
         try
         {
@@ -46,6 +48,14 @@ public class ColorSwitcher implements Serializable
         cs.setPreserveRatio(true);
         cs.setLayoutX(_X);
         cs.setLayoutY(_Y);
+    }
+
+    public int getCollected() {
+        return collected;
+    }
+
+    public void setCollected(int collected) {
+        this.collected = collected;
     }
 
     public ImageView getCs()
@@ -86,6 +96,11 @@ public class ColorSwitcher implements Serializable
     {
         double distance = Point2D.distance(this.X, this.Y, ball.getX(), ball.getY());
         double sumRadii = img.getHeight()/4 + ball.display().getRadius();
+
+        if(sumRadii >= distance)
+        {
+            collected = 1;
+        }
 
         return sumRadii >= distance;
     }

@@ -1,45 +1,25 @@
 package sample;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.animation.RotateTransition;
-import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
-import javafx.scene.transform.Rotate;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.scene.layout.StackPane;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.canvas.*;
-import javafx.scene.web.*;
-import javafx.scene.layout.*;
 import javafx.scene.image.*;
 import javafx.geometry.*;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
-import javafx.scene.paint.*;
 
 public class Main extends Application
 {
     private static MainMenu menu = new MainMenu();
-    private boolean end = false;
 
     public static void main(String[] args)
     {
@@ -91,6 +71,7 @@ public class Main extends Application
             String thePath = "Sound//ThemeMusic.mp3";
             Media media = new Media(new File(thePath).toURI().toString());
             MediaPlayer mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setVolume(0.1);
 
 
             AnimationTimer timer = new AnimationTimer()
@@ -101,11 +82,7 @@ public class Main extends Application
                     cr.move(0, 0);
                     cr2.move(0, 0);
                     cr3.move(0, 0);
-                    //mediaPlayer.play();
-                    if(end)
-                    {
-                        this.stop();
-                    }
+                    mediaPlayer.play();
                 }
             };
 
@@ -137,8 +114,8 @@ public class Main extends Application
                 {
                     try
                     {
-                        end = true;
                         mediaPlayer.stop();
+                        timer.stop();
                         stage.close();
                         menu.start(new Stage());
                     }

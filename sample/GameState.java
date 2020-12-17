@@ -27,6 +27,9 @@ public class GameState implements Serializable
     private float sX;
     private float sY;
 
+    private int count1;
+    private int count2;
+
     //private GameState gameState;
 
     public GameState(int i, int sc, float bx, float by, String bc, float sx, float sy, float obx, float oby, float csx, float csy, int d, int f, int obC)
@@ -45,11 +48,28 @@ public class GameState implements Serializable
         this.bX = bx;
         this.bY = by;
         this.bC = bc;
-        //gameState = this;
+        this.count1 = 0;
+        this.count2 = 0;
+    }
+
+    public int getCount1() {
+        return count1;
+    }
+
+    public int getCount2() {
+        return count2;
     }
 
     public int getDifficultyLevel() {
         return difficultyLevel;
+    }
+
+    public void setCount1(int count1) {
+        this.count1 = count1;
+    }
+
+    public void setCount2(int count2) {
+        this.count2 = count2;
     }
 
     public int getObCount() {

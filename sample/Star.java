@@ -2,8 +2,6 @@ package sample;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import java.awt.geom.Point2D;
 import java.io.FileInputStream;
 import java.io.Serializable;
@@ -16,6 +14,7 @@ public class Star implements Serializable
     private int state;
     private Image img;
     private ImageView star;
+    private int collected;
 
 
     public Star(float _X, float _Y)
@@ -24,6 +23,7 @@ public class Star implements Serializable
         this.state = 0;
         this.X = _X;
         this.Y = _Y;
+        this.collected = 0;
 
         try
         {
@@ -40,6 +40,14 @@ public class Star implements Serializable
         star.setPreserveRatio(true);
         star.setLayoutX(_X);
         star.setLayoutY(_Y);
+    }
+
+    public int getCollected() {
+        return collected;
+    }
+
+    public void setCollected(int collected) {
+        this.collected = collected;
     }
 
     public ImageView getStar()
@@ -69,6 +77,10 @@ public class Star implements Serializable
         double distance = Point2D.distance(this.X, this.Y, ball.getX(), ball.getY());
         double sumRadii = img.getHeight()/4 + ball.display().getRadius();
 
+        if(sumRadii >= distance)
+        {
+            collected = 1;
+        }
         return sumRadii >= distance;
     }
 

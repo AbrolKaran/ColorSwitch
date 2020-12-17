@@ -1,24 +1,39 @@
 package sample;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
+import java.io.File;
 import java.io.FileInputStream;
+import java.util.Optional;
 
 public class GameOverPage extends Application
 {
+    private AnimationTimer tim;
+    private int sc;
+    private GamePlay game;
+    private MainMenu menu;
+    private Stage st;
+
+    public GameOverPage(AnimationTimer t, int s, GamePlay g, MainMenu mm, Stage _st)
+    {
+        this.tim = t;
+        this.sc = s;
+        this.game = g;
+        this.menu = mm;
+        this.st = _st;
+    }
     @Override
     public void start(Stage stage) throws Exception
     {
@@ -26,8 +41,8 @@ public class GameOverPage extends Application
         {
             // set title for the stage
             stage.setTitle("Game Over");
-            Label score = new Label("10");
-            Label highScore = new Label("20");
+            Label score = new Label(Integer.toString(sc));
+            Label highScore = new Label(Integer.toString(menu.getHighScore()));
             score.setStyle("-fx-font-size: 35px; -fx-font-family: 'Verdana'");
             score.setTranslateX(0);
             score.setTranslateY(-80);
@@ -58,6 +73,9 @@ public class GameOverPage extends Application
                 {
                     try
                     {
+                        System.out.println("High score : " + menu.getSavedGames().getHighScore());
+                        menu.serialize();
+                        st.close();
                         stage.close();
                         (new MainMenu()).start(new Stage());
                     }
@@ -69,17 +87,10 @@ public class GameOverPage extends Application
                 }
             });
 
-            //Creating a dialog for resurrect
-            Dialog<String> dialog = new Dialog<String>();
-            //Setting the title
-            dialog.setTitle("Resurrect");
-            ButtonType type = new ButtonType("YES", ButtonBar.ButtonData.OK_DONE);
-            ButtonType type2 = new ButtonType("NO", ButtonBar.ButtonData.OK_DONE);
-            //Setting the content of the dialog
-            dialog.setHeaderText("Are you sure you want to use 10 stars to resurrect?");
-            //dialog.setWidth(500);
-            //Adding buttons to the dialog pane
-            dialog.getDialogPane().getButtonTypes().addAll(type2, type);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("Resurrect");
+            alert.setContentText("Are you sure you want to use 5 stars to resurrect?");
 
             //Creating graphic resurrect
             Image img3 = new Image(new FileInputStream("GameOver\\7.png"));
@@ -102,7 +113,46 @@ public class GameOverPage extends Application
                 @Override
                 public void handle(ActionEvent actionEvent)
                 {
-                    dialog.showAndWait();
+                    Optional<ButtonType> result = alert.showAndWait();
+
+                    if (result.get() == ButtonType.OK && sc>=5){
+                        // ... user chose OK
+                        try
+                        {
+                            menu.serialize();
+                        }
+
+                        catch(Exception e)
+                        {
+                            System.out.println("Game over page error");
+                        }
+
+                        game.resurrect(tim);
+                        stage.close();
+                    }
+
+                    else if (result.get() == ButtonType.OK && sc<5){
+                        // user chose OK but not enough stars
+                        String thePath = "Sound//error.wav";
+                        Media media = new Media(new File(thePath).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(media);
+                        mediaPlayer.setVolume(1);
+                        mediaPlayer.play();
+
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error Dialog");
+                        alert.setHeaderText("You cannot resurrect!");
+                        alert.setContentText("Sorry, you don't have enough stars.");
+
+                        alert.showAndWait();
+                        st.close();
+                    }
+
+                    else {
+                        // ... user chose CANCEL or closed the dialog
+                        System.out.println("else");
+                    }
+
                 }
             });
 

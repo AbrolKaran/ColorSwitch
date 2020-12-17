@@ -5,9 +5,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Shape;
-import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Rotate;
-import  javafx.geometry.Bounds;
+
 
 import java.util.ArrayList;
 

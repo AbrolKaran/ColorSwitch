@@ -10,38 +10,17 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.shape.Circle;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
-import javafx.scene.transform.Rotate;
-import javafx.scene.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.scene.layout.StackPane;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.canvas.*;
-import javafx.scene.web.*;
-import javafx.scene.layout.*;
-import javafx.scene.image.*;
-import javafx.geometry.*;
 import javafx.scene.Group;
 import javafx.scene.paint.*;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import java.io.FileInputStream;
 
 public class GamePlay extends Application
@@ -62,10 +41,13 @@ public class GamePlay extends Application
     private ArrayList<SmallBall> smallBalls;
     private MainMenu menu;
     private int var;
+    private GamePlay gameplay;
+    private int noDetect;
+    private int cnt1;
+    private int cnt2;
 
 
-
-    public GamePlay(int ID,MainMenu mm)
+    public GamePlay(int ID, MainMenu mm)
     {
         this.id = ID;
         this.score = 0;
@@ -77,12 +59,32 @@ public class GamePlay extends Application
         this.obCount = 2;
         this.var = 0;
         this.menu = mm;
+        this.gameplay = this;
+        this.noDetect = 0;
+        this.cnt1 = 0;
+        this.cnt2 = 0;
 
         this.colors = new ArrayList<>();
         colors.add("#38B6FF");
         colors.add("#CB6CE6");
         colors.add("#FFDE59");
         colors.add("#FF5757");
+    }
+
+    public int getCnt1() {
+        return cnt1;
+    }
+
+    public int getCnt2() {
+        return cnt2;
+    }
+
+    public ArrayList<Star> getStars() {
+        return stars;
+    }
+
+    public ArrayList<ColorSwitcher> getColorSwitchers() {
+        return colorSwitchers;
     }
 
     @Override
@@ -92,7 +94,6 @@ public class GamePlay extends Application
 
         Group root = new Group();
 
-
         // create quit button
         Button end = new Button("QUIT GAME");
         end.setLayoutX(width - 100);
@@ -101,24 +102,6 @@ public class GamePlay extends Application
         end.setTextFill(Color.WHITE);
         //Setting the size of the button
         end.setPrefSize(100, 40);
-
-        end.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent actionEvent)
-            {
-                try
-                {
-                    stage.close();
-                    (new GameOverPage()).start(new Stage());
-                }
-
-                catch (Exception e)
-                {
-                    System.out.println(e.getMessage());
-                }
-            }
-        });
 
 
         //create stars
@@ -137,7 +120,6 @@ public class GamePlay extends Application
         ImageView csView2 = CS2.getCs();
 
         colorSwitchers.add(CS2);
-
 
         this.ball = new Ball(posX,600, -6.5f, 7, colors.get(0));
 
@@ -185,10 +167,11 @@ public class GamePlay extends Application
 
                 flag=1;
 
-                //CircleObstacle cr = (CircleObstacle)obstacles.get(0);
-                //System.out.println("Obstacle 1 Y : " + cr.getY());
-                //System.out.println("Distance with ball : " + (cr.getY() - ball.getY()));
-                System.out.println("Num obstacles : " + obstacles.size());
+                String thePath = "Sound//jump.wav";
+                Media media = new Media(new File(thePath).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setVolume(menu.getVol());
+                mediaPlayer.play();
             }
         });
 
@@ -211,15 +194,47 @@ public class GamePlay extends Application
                 }
                 flag = 0;
 
+                System.out.println("ball Y : " + ball.getY());
+
                 for(Obstacle ob : obstacles)
                 {
                     ob.move(vel, ch);
                     if(ob.intersect(ball))
                     {
                         System.out.println("intersect");
-                        /*gameOver(root);
-                        ball.display().setVisible(false);
-                        this.stop();*/
+
+                        if(noDetect == 0)
+                        {
+                            gameOver(root);
+                            this.stop();
+
+                            try
+                            {
+                                (new GameOverPage(this, score, gameplay, menu, stage)).start(new Stage());
+                            }
+
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+
+                if(ball.getY() > 1000)
+                {
+                    gameOver(root);
+                    this.stop();
+
+                    try
+                    {
+                        (new GameOverPage(this, score, gameplay, menu, stage)).start(new Stage());
+                        throw new BallNotFoundException("Ball has fallen");
+                    }
+
+                    catch (Exception e)
+                    {
+                        e.getMessage();
                     }
                 }
 
@@ -233,13 +248,15 @@ public class GamePlay extends Application
                     }
                 }
 
-                placeObstacle(root);
-
-                /*if(scoreDiff > 2)
+                try
                 {
-                    obstacles.remove(0);
-                    scoreDiff = 0;
-                }*/
+                    placeObstacle(root);
+                }
+
+                catch (ObstacleNotPlacedException e)
+                {
+                    e.getMessage();
+                }
 
                 for(Star s : stars)
                 {
@@ -265,6 +282,10 @@ public class GamePlay extends Application
                     if(cs.intersect(ball))
                     {
                         useColorSwitcher(cs);
+                        if(noDetect == 1)
+                        {
+                            noDetect = 0;
+                        }
                     }
                 }
 
@@ -282,6 +303,23 @@ public class GamePlay extends Application
         timer.start();
 
         displayOptions(root, timer, stage);
+        end.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent actionEvent)
+            {
+                try
+                {
+                    stage.close();
+                    (new GameOverPage(timer, score, gameplay, menu, stage)).start(new Stage());
+                }
+
+                catch (Exception e)
+                {
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
 
         // set the scene
         stage.setScene(scene);
@@ -290,6 +328,12 @@ public class GamePlay extends Application
 
     public void collectStar(Star s)
     {
+        String thePath = "Sound//star.wav";
+        Media media = new Media(new File(thePath).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setVolume(menu.getVol());
+        mediaPlayer.play();
+
         s.getStar().setVisible(false);
         score += s.getPoints();
         s.setPoints(0);
@@ -298,6 +342,12 @@ public class GamePlay extends Application
 
     public void useColorSwitcher(ColorSwitcher cs)
     {
+        String thePath = "Sound//colorswitch.wav";
+        Media media = new Media(new File(thePath).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setVolume(1.5);
+        mediaPlayer.play();
+
         if(cs.getState() == 0)
         {
             cs.setState(1);
@@ -340,7 +390,7 @@ public class GamePlay extends Application
                 {
                     timer.stop();
                     GameState gm = new GameState(id, score, ball.getX(), ball.getY(), ball.getColor(), stars.get(0).getX(), stars.get(0).getY(), obstacles.get(0).getPosX(), obstacles.get(0).getY(), colorSwitchers.get(0).getX(), colorSwitchers.get(0).getY(), difficultyLevel, flag, obCount-2);
-                    (new PausePage(timer, gm, st,menu)).start(new Stage());
+                    (new PausePage(timer, gm, st, menu)).start(new Stage());
                 }
 
                 catch (Exception e)
@@ -378,19 +428,36 @@ public class GamePlay extends Application
     public void placeStar(float _Y, Group root)
     {
         Star star = new Star((width/2) - 16, _Y);
-        root.getChildren().add(star.getStar());
-        this.stars.add(star);
+        if(this.cnt1 > 0)
+        {
+            this.cnt1--;
+        }
+
+        else
+        {
+            root.getChildren().add(star.getStar());
+            this.stars.add(star);
+        }
     }
     
     public void placeCS(float Y1, float Y2, Group root, ArrayList<String> myColors)
     {
         float _Y = (Y1 + Y2) / 2;
         ColorSwitcher cs = new ColorSwitcher(myColors, 27, (width/2)-16, _Y);
-        root.getChildren().add(cs.getCs());
-        this.colorSwitchers.add(cs);
+
+        if(this.cnt2 > 0)
+        {
+            this.cnt2--;
+        }
+
+        else {
+
+            root.getChildren().add(cs.getCs());
+            this.colorSwitchers.add(cs);
+        }
     }
 
-    public void placeObstacle(Group root)
+    public void placeObstacle(Group root) throws ObstacleNotPlacedException
     {
         float posX = width/2;
 
@@ -489,6 +556,11 @@ public class GamePlay extends Application
                 this.setDifficultyLevel(1);
                 break;
         }}
+
+        else
+        {
+            throw new ObstacleNotPlacedException("Obstacle array full");
+        }
     }
 
     public void setDifficultyLevel(int Level)
@@ -502,6 +574,36 @@ public class GamePlay extends Application
 
     public void gameOver(Group root)
     {
+        if(this.score > menu.getHighScore())
+        {
+            menu.getSavedGames().setHighScore(score);
+            menu.setHighScore(score);
+            String thePath = "Sound//victory.wav";
+            Media media = new Media(new File(thePath).toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setVolume(menu.getVol());
+            mediaPlayer.play();
+
+            /*try
+            {
+                menu.serialize();
+            }
+
+            catch(Exception e)
+            {
+                System.out.println("Gameplay serialization error");
+            }*/
+
+        }
+
+        ball.display().setVisible(false);
+
+        String thePath = "Sound//dead.wav";
+        Media media = new Media(new File(thePath).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setVolume(menu.getVol());
+        mediaPlayer.play();
+
         for(int i=0; i<30; i++)
         {
             smallBalls.add(new SmallBall(this.colors, ball.getX(), ball.getY(), 4));
@@ -518,6 +620,22 @@ public class GamePlay extends Application
         animation.play(); // Start animation
     }
 
+    public void resurrect(AnimationTimer timer)
+    {
+        for(SmallBall s : smallBalls)
+        {
+            s.getSmallBall().setVisible(false);
+        }
+        smallBalls = new ArrayList<>();
+        ball.display().setVisible(true);
+        score -= 5;
+        scoreLabel.setText(Integer.toString(score));
+        //ball.display().relocate(ball.getX(), ball.getY()+0.2);
+        var = 0;
+        noDetect = 1;
+        timer.start();
+    }
+
     public final void moveBalls() {
         smallBalls.forEach(SmallBall::moveBall);
     }
@@ -527,6 +645,8 @@ public class GamePlay extends Application
         this.score = gm.getScore();
         this.difficultyLevel = gm.getDifficultyLevel();
         this.obCount = gm.getObCount();
+        this.cnt1 = gm.getCount1();
+        this.cnt2 = gm.getCount2();
 
         Stage stage = new Stage();
 
@@ -543,24 +663,6 @@ public class GamePlay extends Application
         end.setTextFill(Color.WHITE);
         //Setting the size of the button
         end.setPrefSize(100, 40);
-
-        end.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent actionEvent)
-            {
-                try
-                {
-                    stage.close();
-                    (new GameOverPage()).start(new Stage());
-                }
-
-                catch (Exception e)
-                {
-                    System.out.println(e.getMessage());
-                }
-            }
-        });
 
 
         //create stars
@@ -644,7 +746,7 @@ public class GamePlay extends Application
         }
 
         root.getChildren().addAll(ball.display(), end);
-        root.getChildren().addAll(csView2, starView1);
+        //root.getChildren().addAll(csView2, starView1);
 
         //Creating the scroll pane
         ScrollPane scroll = new ScrollPane();
@@ -658,9 +760,18 @@ public class GamePlay extends Application
         scene.setOnKeyPressed(e -> {
             if(e.getCode().equals(KeyCode.A));
             {
+                if(var == 0)
+                {
+                    var =1;
+                }
+
                 flag=1;
 
-                System.out.println("Num obstacles : " + obstacles.size());
+                String thePath = "Sound//jump.wav";
+                Media media = new Media(new File(thePath).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setVolume(menu.getVol());
+                mediaPlayer.play();
             }
         });
 
@@ -670,82 +781,145 @@ public class GamePlay extends Application
             @Override
             public void handle(long l)
             {
-                float vel = ball.getVelocity();
-                int ch;
-                if(ball.getY()<=length/2 && vel<0) {
-                    ch=1;
-                    ball.updateVel(flag);
-                }
-                else{
-                    ch=0;
-                    ball.move(flag);
-                }
-                flag = 0;
-
-                for(Obstacle ob : obstacles)
-                {
-                    ob.move(vel, ch);
-                    if(ob.intersect(ball))
-                    {
-                        System.out.println("intersect");
-                        /*gameOver(root);
-                        ball.display().setVisible(false);
-                        this.stop();*/
+                if(var == 1){
+                    float vel = ball.getVelocity();
+                    int ch;
+                    if(ball.getY()<=length/2 && vel<0) {
+                        ch=1;
+                        ball.updateVel(flag);
                     }
-                }
-
-                for(Obstacle ob : obstacles)
-                {
-                    if(ob.offscreen(ball))
-                    {
-                        obstacles.remove(ob);
-                        System.out.println("removed " + obstacles.size());
-                        break;
+                    else{
+                        ch=0;
+                        ball.move(flag);
                     }
-                }
+                    flag = 0;
 
-                placeObstacle(root);
+                    System.out.println("ball Y : " + ball.getY());
 
-                for(Star s : stars)
-                {
-                    s.move(vel, ch);
-                    if(s.intersect(ball))
+                    for(Obstacle ob : obstacles)
                     {
-                        collectStar(s);
-                    }
-                }
+                        ob.move(vel, ch);
+                        if(ob.intersect(ball))
+                        {
+                            System.out.println("intersect");
 
-                for(Star s : stars)
-                {
-                    if(!s.getStar().isVisible())
-                    {
-                        stars.remove(s);
-                        break;
-                    }
-                }
+                            if(noDetect == 0)
+                            {
+                                gameOver(root);
+                                this.stop();
 
-                for(ColorSwitcher cs : colorSwitchers)
-                {
-                    cs.move(vel, ch);
-                    if(cs.intersect(ball))
-                    {
-                        useColorSwitcher(cs);
-                    }
-                }
+                                try
+                                {
+                                    (new GameOverPage(this, score, gameplay, menu, stage)).start(new Stage());
+                                }
 
-                for(ColorSwitcher cs : colorSwitchers)
-                {
-                    if(!cs.getCs().isVisible())
-                    {
-                        colorSwitchers.remove(cs);
-                        break;
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
                     }
-                }
-            }
+
+                    if(ball.getY() > 1000)
+                    {
+                        gameOver(root);
+                        this.stop();
+
+                        try
+                        {
+                            (new GameOverPage(this, score, gameplay, menu, stage)).start(new Stage());
+                            throw new BallNotFoundException("Ball has fallen");
+                        }
+
+                        catch (Exception e)
+                        {
+                            e.getMessage();
+                        }
+                    }
+
+                    for(Obstacle ob : obstacles)
+                    {
+                        if(ob.offscreen(ball))
+                        {
+                            obstacles.remove(ob);
+                            System.out.println("removed " + obstacles.size());
+                            break;
+                        }
+                    }
+
+                    try
+                    {
+                        placeObstacle(root);
+                    }
+
+                    catch (ObstacleNotPlacedException e)
+                    {
+                        e.getMessage();
+                    }
+
+                    for(Star s : stars)
+                    {
+                        s.move(vel, ch);
+                        if(s.intersect(ball))
+                        {
+                            collectStar(s);
+                        }
+                    }
+
+                    for(Star s : stars)
+                    {
+                        if(!s.getStar().isVisible())
+                        {
+                            stars.remove(s);
+                            break;
+                        }
+                    }
+
+                    for(ColorSwitcher cs : colorSwitchers)
+                    {
+                        cs.move(vel, ch);
+                        if(cs.intersect(ball))
+                        {
+                            useColorSwitcher(cs);
+                            if(noDetect == 1)
+                            {
+                                noDetect = 0;
+                            }
+                        }
+                    }
+
+                    for(ColorSwitcher cs : colorSwitchers)
+                    {
+                        if(!cs.getCs().isVisible())
+                        {
+                            colorSwitchers.remove(cs);
+                            break;
+                        }
+                    }
+                }}
         };
 
         timer.start();
+
         displayOptions(root, timer, stage);
+        end.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent actionEvent)
+            {
+                try
+                {
+                    stage.close();
+                    (new GameOverPage(timer, score, gameplay, menu, stage)).start(new Stage());
+                }
+
+                catch (Exception e)
+                {
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
 
         // set the scene
         stage.setScene(scene);

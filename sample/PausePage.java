@@ -2,31 +2,21 @@ package sample;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Optional;
-
-import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
-import javafx.animation.RotateTransition;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
-import javafx.scene.transform.Rotate;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.canvas.*;
-import javafx.scene.web.*;
-import javafx.scene.layout.*;
 import javafx.scene.image.*;
 import javafx.geometry.*;
 import javafx.scene.Group;
-import javafx.scene.paint.*;
-import javafx.util.Duration;
 
 public class PausePage extends Application
 {
@@ -35,13 +25,14 @@ public class PausePage extends Application
     private Stage game;
     private MainMenu menu;
 
-    public PausePage(AnimationTimer timer, GameState gm, Stage g,MainMenu mm)
+    public PausePage(AnimationTimer timer, GameState gm, Stage g, MainMenu mm)
     {
         this.timer2 = timer;
         this.gameState = gm;
         this.game = g;
         this.menu = mm;
     }
+
     @Override
     public void start(Stage stage) throws Exception
     {
@@ -119,6 +110,12 @@ public class PausePage extends Application
                 @Override
                 public void handle(ActionEvent actionEvent)
                 {
+                    String thePath = "Sound//button.wav";
+                    Media media = new Media(new File(thePath).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                    mediaPlayer.setVolume(menu.getVol());
+                    mediaPlayer.play();
+
                     timer2.start();
                     stage.close();
                 }
@@ -150,10 +147,31 @@ public class PausePage extends Application
                 @Override
                 public void handle(ActionEvent actionEvent)
                 {
+                    String thePath = "Sound//button.wav";
+                    Media media = new Media(new File(thePath).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                    mediaPlayer.setVolume(menu.getVol());
+                    mediaPlayer.play();
+
                     Optional<String> name = dialog.showAndWait();
 
                     name.ifPresent(input -> {
 
+                        for(Star st : menu.getCurrentGame().getStars())
+                        {
+                            if(st.getCollected() == 1)
+                            {
+                                gameState.setCount1(gameState.getCount1()+1);
+                            }
+                        }
+
+                        for(ColorSwitcher cs : menu.getCurrentGame().getColorSwitchers())
+                        {
+                            if(cs.getCollected() == 1)
+                            {
+                                gameState.setCount2(gameState.getCount2()+1);
+                            }
+                        }
                         gameState.setName(name.get());
                         menu.getSavedGames().getNames().add(name.get());
                         menu.getSavedGames().getListGames().put(name.get(),gameState);
@@ -164,6 +182,7 @@ public class PausePage extends Application
                             stage.close();
                             game.close();
                             MainMenu mm = new MainMenu();
+                            //mm.addState(gameState);
                             mm.start(new Stage());
                         }
 
@@ -198,8 +217,15 @@ public class PausePage extends Application
                 @Override
                 public void handle(ActionEvent actionEvent)
                 {
+                    String thePath = "Sound//button.wav";
+                    Media media = new Media(new File(thePath).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                    mediaPlayer.setVolume(menu.getVol());
+                    mediaPlayer.play();
+
                     try
                     {
+                        menu.serialize();
                         stage.close();
                         game.close();
                         (new MainMenu()).start(new Stage());
@@ -254,6 +280,4 @@ public class PausePage extends Application
             System.out.println(e.getMessage());
         }
     }
-
-
 }
