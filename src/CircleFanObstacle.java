@@ -1,17 +1,17 @@
-
+package src;
 import javafx.scene.Group;
 
 import java.util.ArrayList;
 
-public class SquareCircleObstacle extends Obstacle{
-    private SquareObstacle s1;
+public class CircleFanObstacle extends Obstacle{
     private CircleObstacle c1;
+    private FanObstacle f1;
 
     @Override
     public void move(float vel,int ch){
 
-        s1.move(vel,ch);
-        c1.move(vel,ch);
+        f1.move(vel, ch);
+        c1.move(vel, ch);
     }
 
     @Override
@@ -21,39 +21,38 @@ public class SquareCircleObstacle extends Obstacle{
 
     @Override
     public void display(Group r){
-        s1.display(r);
+        f1.display(r);
         c1.display(r);
     }
 
-
-
-    public SquareObstacle getS1() {
-        return s1;
+    public FanObstacle getS1() {
+        return f1;
     }
 
     public CircleObstacle getC1() {
         return c1;
     }
 
-    SquareCircleObstacle(int d, ArrayList<String> c, float x, float y,float l,int dir){
+    CircleFanObstacle(int d, ArrayList<String> c, float x, float y, float l, int dir){
         super(d,c,x,y,l,dir);
-        s1 = new SquareObstacle(d,c,x-(l+100)/2,y-(l+100)/2,l+90,d*dir);
-        c1 = new CircleObstacle(d,c,x,y,l,-1*dir*d);
-
-        myColors = new ArrayList<>();
+        f1 = new FanObstacle(d,c,x+20,y,l-10,d*dir);
+        c1 = new CircleObstacle(d,c,x,y,l+20,-1*dir*d);
+        myColors = new ArrayList<String>();
+        myColors.add("#FF5757");
+        myColors.add("#FFDE59");
         myColors.add("#CB6CE6");
     }
 
     @Override
     public boolean intersect(Ball ball)
     {
-        return s1.intersect(ball) || c1.intersect(ball);
+        return c1.intersect(ball) || f1.intersect(ball);
     }
 
     @Override
     public boolean offscreen(Ball ball)
     {
-        return s1.offscreen(ball);
+        return c1.offscreen(ball);
     }
 
     @Override
@@ -61,6 +60,5 @@ public class SquareCircleObstacle extends Obstacle{
     {
         return c1.getY();
     }
-
 
 }
