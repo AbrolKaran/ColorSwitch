@@ -1,5 +1,5 @@
 # ColorSwitch
-Created by Rachita Saha and Karan Abrol for Advanced Programming Project at IIIT-Delhi.
+Created by @rachita19082 and @AbrolKaran for Advanced Programming Project at IIIT-Delhi.
 
 This is a replica of the famous gaming app Color Switch implemented using Java and JavaFX.
 
