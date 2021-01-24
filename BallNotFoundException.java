@@ -1,5 +1,3 @@
-package sample;
-
 public class BallNotFoundException extends Exception
 {
     public BallNotFoundException(String msg)

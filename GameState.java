@@ -1,5 +1,3 @@
-package sample;
-
 import javafx.scene.control.Label;
 
 import java.io.*;

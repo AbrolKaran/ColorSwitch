@@ -1,4 +1,3 @@
-package sample;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Optional;
