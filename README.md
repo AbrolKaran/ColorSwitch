@@ -17,7 +17,8 @@ This is a replica of the famous gaming app Color Switch implemented using Java a
 
 Please view the demo of the game [here](https://drive.google.com/file/d/1V4ri4my3BV4tZWtIKNfrXkb70yu1u_AV/view?usp=sharing).
 
-Find the screenshots of the game below.
+Find the screenshots of the game below.<br />
+
 ![pg1](/Screenshots/pg1.png)
 
 
