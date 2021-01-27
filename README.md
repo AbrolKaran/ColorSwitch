@@ -19,6 +19,11 @@ Please view the demo of the game [here](https://drive.google.com/file/d/1V4ri4my
 
 Find the screenshots of the game below.<br />
 
-![pg1](/Screenshots/pg1.png)
+![pg1](/Screenshots/pg1.png)\
+![pg2](/Screenshots/pg2.png)\
+![pg3](/Screenshots/pg3.png)\
+![pg4](/Screenshots/pg4.png)\
+![pg5](/Screenshots/pg5.png)\
+
 
 
