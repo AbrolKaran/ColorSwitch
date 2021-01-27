@@ -23,7 +23,7 @@ Find the screenshots of the game below.<br />
 ![pg2](/Screenshots/pg2.png)\
 ![pg3](/Screenshots/pg3.png)\
 ![pg4](/Screenshots/pg4.png)\
-![pg5](/Screenshots/pg5.png)\
+![pg5](/Screenshots/pg5.png)
 
 
 
